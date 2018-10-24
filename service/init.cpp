@@ -85,6 +85,9 @@ JHI_RET_I
 
 	//Read app repository location
 	if( JHI_SUCCESS != JhiQueryAppFileLocationFromRegistry(
+#ifdef _WIN32
+		gSvcStatusHandle,
+#endif
 		appletsFileLocation,
 		(FILENAME_MAX-1) * sizeof(FILECHAR)))
 	{
@@ -120,6 +123,9 @@ JHI_RET_I
 
 	//Read jhi service file location
 	if( JHI_SUCCESS != JhiQueryServiceFileLocationFromRegistry(
+#ifdef _WIN32
+		gSvcStatusHandle,
+#endif
 		jhiFileLocation,
 		(FILENAME_MAX-1) * sizeof(FILECHAR)))
 	{

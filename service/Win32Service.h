@@ -74,12 +74,12 @@
 
 
 // service globals
-static SERVICE_STATUS          gSvcStatus; 
-static SERVICE_STATUS_HANDLE   gSvcStatusHandle; 
-static HANDLE                  ghSvcStopEvent = NULL;
+extern SERVICE_STATUS          gSvcStatus; 
+extern SERVICE_STATUS_HANDLE   gSvcStatusHandle;
+extern HANDLE                  ghSvcStopEvent;
 
-static HANDLE				   heciDevice = NULL;
-static HDEVNOTIFY			   heciNotifyHandle = NULL;
+extern HANDLE				   heciDevice;
+extern HDEVNOTIFY			   heciNotifyHandle;
 
 
 // service API

@@ -30,6 +30,15 @@
 #include "misc.h"
 #include <iostream>
 using namespace intel_dal;
+
+// service globals
+SERVICE_STATUS          gSvcStatus;
+SERVICE_STATUS_HANDLE   gSvcStatusHandle;
+HANDLE                  ghSvcStopEvent = NULL;
+
+HANDLE				   heciDevice = NULL;
+HDEVNOTIFY			   heciNotifyHandle = NULL;
+
 //
 // Purpose: 
 //   Entry point for the process

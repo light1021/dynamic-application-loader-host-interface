@@ -38,10 +38,13 @@ typedef UINT32 JHI_RET_I;
 extern "C" {
 #endif
 
-JHI_RET_I 
+#ifndef _WIN32
+JHI_RET_I
 JhiQueryAppFileLocationFromRegistry(FILECHAR* outBuffer, uint32_t outBufferSize);
 
-#ifndef _WIN32
+JHI_RET_I
+JhiQueryServiceFileLocationFromRegistry(FILECHAR* outBuffer, uint32_t outBufferSize);
+
 JHI_RET_I
 JhiQueryPluginLocationFromRegistry(FILECHAR* outBuffer, uint32_t outBufferSize);
 
@@ -53,10 +56,14 @@ JhiQueryEventSocketsLocationFromRegistry(FILECHAR* outBuffer, uint32_t outBuffer
 
 JHI_RET_I
 RestartJhiService ();
-#endif //!_WIN32
+
+#else
+JHI_RET_I
+JhiQueryAppFileLocationFromRegistry(SERVICE_STATUS_HANDLE handle, FILECHAR* outBuffer, uint32_t outBufferSize);
 
 JHI_RET_I
-JhiQueryServiceFileLocationFromRegistry(FILECHAR* outBuffer, uint32_t outBufferSize);
+JhiQueryServiceFileLocationFromRegistry(SERVICE_STATUS_HANDLE handle, FILECHAR* outBuffer, uint32_t outBufferSize);
+#endif //!_WIN32
 
 JHI_RET_I
 JhiQueryServicePortFromRegistry(uint32_t* portNumber);

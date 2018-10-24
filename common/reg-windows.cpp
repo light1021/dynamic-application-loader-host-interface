@@ -41,6 +41,7 @@
 #include "reg.h"
 
 #ifdef NEW_REG_LOCATION
+#include <winsvc.h>
 
 #ifdef SCHANNEL_OVER_SOCKET // emulation mode
 #define REGISTRY_PATH  "SYSTEM\\CurrentControlSet\\Services\\jhi_service_emulation"
@@ -126,23 +127,62 @@ bool readIntegerFromRegistry(const wchar_t* key,uint32_t* value)
 	return true;
 }
 
-JHI_RET_I
-JhiQueryAppFileLocationFromRegistry (wchar_t* outBuffer, uint32_t outBufferSize)
+#ifdef NEW_REG_LOCATION
+bool readStringParameterFromRegistry(SERVICE_STATUS_HANDLE srvcHandle, const wchar_t* value, wchar_t* outBuffer, uint32_t outBufferSize)
 {
+	HKEY hKey;
+	DWORD dwType = REG_SZ | REG_EXPAND_SZ;
+	int maxElementSize = -1;
+	int ret;
+
+	if ((ret = GetServiceRegistryStateKey(srvcHandle, ServiceRegistryStateParameters, KEY_READ, &hKey)) != ERROR_SUCCESS)
+	{
+		TRACE3("Registry read failure for %S, GetServiceRegistryStateKey failed %d handle %p\n", value, ret, (void *)srvcHandle);
+		return false;
+	}
+
+	// Check for the actual value
+	if (RegQueryValueEx(hKey, value, 0, &dwType, (LPBYTE)outBuffer, (LPDWORD)&outBufferSize) != ERROR_SUCCESS)
+	{
+		TRACE1("Registry read failure for %S\n", value);
+		RegCloseKey(hKey);
+		return false;
+	}
+
+	maxElementSize = outBufferSize / sizeof(wchar_t);
+	if (outBuffer[maxElementSize] != '\0') // RegQueryValueEx does not guarantee that the string returned is null terminated
+		outBuffer[maxElementSize] = '\0';
+
+	RegCloseKey(hKey);
+	return true;
+}
+#endif
+
+JHI_RET_I
+JhiQueryAppFileLocationFromRegistry (SERVICE_STATUS_HANDLE srvcHandle, wchar_t* outBuffer, uint32_t outBufferSize)
+{
+#ifdef NEW_REG_LOCATION
+	if (!readStringParameterFromRegistry(srvcHandle, KEY_JHI_APPLETS_REPOSITORY_PATH, outBuffer, outBufferSize))
+		return JHI_ERROR_REGISTRY;
+#else
 	if (!readStringFromRegistry(KEY_JHI_APPLETS_REPOSITORY_PATH,outBuffer,outBufferSize))
 		return JHI_ERROR_REGISTRY;
-
+#endif
 	return JHI_SUCCESS;
 }
 
 JHI_RET_I
-JhiQueryServiceFileLocationFromRegistry (wchar_t* outBuffer, uint32_t outBufferSize)
+JhiQueryServiceFileLocationFromRegistry (SERVICE_STATUS_HANDLE srvcHandle, wchar_t* outBuffer, uint32_t outBufferSize)
 {
 	std::unique_ptr<wchar_t> temp {new wchar_t[outBufferSize]};
 
+#ifdef NEW_REG_LOCATION
+	if (!readStringParameterFromRegistry(srvcHandle, KEY_JHI_FILES_PATH, temp.get(), outBufferSize))
+		return JHI_ERROR_REGISTRY;
+#else
 	if (!readStringFromRegistry(KEY_JHI_FILES_PATH, temp.get(), outBufferSize))
 		return JHI_ERROR_REGISTRY;
-
+#endif
 	ExpandEnvironmentStrings(temp.get(), outBuffer, outBufferSize);
 
 	return JHI_SUCCESS;

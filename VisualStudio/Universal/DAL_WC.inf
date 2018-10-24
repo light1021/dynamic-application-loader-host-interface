@@ -24,7 +24,7 @@ Signature="$Windows NT$"
 Class=SoftwareComponent 
 ClassGuid={5c4c3332-344d-483c-8739-259e934c9cc8}
 Provider=%ManufacturerName%
-CatalogFile=DAL.cat
+CatalogFile=DAL_WC.cat
 DriverVer=03/20/2017,9999.99.0.0
 
 [SourceDisksNames]
@@ -43,8 +43,6 @@ TEETransport.dll      = 1
 
 [DestinationDirs]
 DAL.Files.13 = 13
-DAL_Files.amd64  = 11
-DAL_Files.x86  = 16425
 
 ;*****************************************
 ; Install Section
@@ -54,19 +52,17 @@ DAL_Files.x86  = 16425
 %ManufacturerName%=Intel, NTamd64
 
 [Intel.NTamd64]
-%DALDescription% = DALInstallSection.ntamd64, SWC\3C4852D6-D47B-4F46-B05E-B5EDC1AA440E
+%DALDescription% = DALInstallSection.ntamd64, SWC\DBA4D603-D7ED-4931-8823-17AD585705D5
 
 [DALInstallSection.ntamd64]
 CopyFiles = DAL.Files.13
-CopyFiles = DAL_Files.x86
-CopyFiles = DAL_Files.amd64
 
 [DALInstallSection.ntamd64.Services]
 AddService = , 0x00000002
 AddService = jhi_service, %SPSVCSINST_STARTSERVICE%, DAL_Service_Inst
 
 [DALInstallSection.ntamd64.Interfaces]
-AddInterface="{3C4852D6-D47B-4F46-B05E-B5EDC1AA440E}", , DALInterfaceSection
+AddInterface="{DBA4D603-D7ED-4931-8823-17AD585705D5}", , DALInterfaceSection
 
 [DALInterfaceSection]
 AddReg=DALInterfaceSection_AddReg
@@ -108,14 +104,6 @@ SpoolerApplet.dalp
 TEETransport.dll
 JHI.dll
 TEEManagement.dll
-JHI64.dll
-TEEManagement64.dll
-
-[DAL_Files.x86]
-JHI.dll
-TEEManagement.dll
-
-[DAL_Files.amd64]
 JHI64.dll
 TEEManagement64.dll
 
