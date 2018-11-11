@@ -2988,7 +2988,7 @@ void test_23_applet_encryption(JHI_HANDLE hJOM)
 
 	// Uninstall OEM SD
 	cout << "Uninstalling the OEM SD..." << endl;
-	TEE_SendAdminCmdPkg(intelSdSession, &uninstallSdBlob[0], (uint32_t)uninstallSdBlob.size());
+	teeStatus = TEE_SendAdminCmdPkg(intelSdSession, &uninstallSdBlob[0], (uint32_t)uninstallSdBlob.size());
 	if (teeStatus != TEE_STATUS_SUCCESS)
 	{
 		cout << "Uninstall OEM SD failed. Error code: 0x" << hex << teeStatus << "(" << TEEErrorToString(teeStatus) << ")" << endl;

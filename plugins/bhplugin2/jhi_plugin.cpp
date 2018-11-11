@@ -1847,6 +1847,7 @@ cleanup:
 
 
 			//VM Applet instance error code section: //0x400					
+		case	BHE_APPLET_GENERIC:					str = "BHE_APPLET_GENERIC";					break;	//0x400
 		case	BHE_UNCAUGHT_EXCEPTION:				str = "BHE_UNCAUGHT_EXCEPTION";				break;	//0x401											
 			/* Bad parameters to applet */					
 		case	BHE_APPLET_BAD_PARAMETER:			str = "BHE_APPLET_BAD_PARAMETER";			break;	//0x402											
