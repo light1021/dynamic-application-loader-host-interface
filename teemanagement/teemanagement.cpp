@@ -36,7 +36,8 @@ Locker serviceStatusLocker;			 // a lock for syncronization of serviceStarted.
 void checkServiceStatus()
 {
 	// Not relevant for Linux/Android. Services are managed differently.
-#if defined(_WIN32)
+	// When running over emulation, JHI runs as an application and not as a service
+#if defined(_WIN32) && !defined(SCHANNEL_OVER_SOCKET)
 	serviceStatusLocker.Lock();
 	if (!serviceStarted)
 	{

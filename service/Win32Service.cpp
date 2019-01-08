@@ -77,15 +77,18 @@ int __cdecl _tmain(int argc, TCHAR *argv[])
 	}
 	else if( lstrcmpi( argv[1], TEXT("console")) == 0 )
     {
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined (SCHANNEL_OVER_SOCKET)
 		printf("Running JHI in console mode.\n");
 				
 		if (!jhi_init())
+		{
+			printf("Could not init jhi, aborting.\n");
 			return JHI_SERVICE_GENERAL_ERROR;
+		}
 
         return jhi_main();
 #else
-		printf("Running JHI in console mode is not supported in release mode.\n");
+		printf("Running JHI in console is only supported in debug or emulation mode.\n");
 		return JHI_SERVICE_GENERAL_ERROR;
 #endif
     }

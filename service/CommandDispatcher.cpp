@@ -46,6 +46,7 @@ namespace intel_dal
 		UINT32 ulRetCode = JHI_SUCCESS;
 		bool init_succeeded = false;
 		res_header.dataLength = 0;
+		res_header.data[0] = 0;
 
 		do
 		{
@@ -246,6 +247,7 @@ namespace intel_dal
 		JHI_RESPONSE res;
 		res.retCode = JHI_SUCCESS;
 		res.dataLength = sizeof(JHI_RESPONSE);
+		res.data[0] = 0;
 
 		if (inputSize != sizeof(JHI_COMMAND))
 			res.retCode = JHI_INTERNAL_ERROR;
@@ -267,6 +269,7 @@ namespace intel_dal
 		JHI_RESPONSE res;
 		JHI_CMD_INSTALL* install = NULL;
 		res.dataLength = sizeof(JHI_RESPONSE);
+		res.data[0] = 0;
 
 		char* pAppid = NULL;
 		FILECHAR* pFile;
@@ -353,6 +356,7 @@ namespace intel_dal
 		JHI_RESPONSE res;
 		JHI_CMD_UNINSTALL* uninstall = NULL;
 		res.dataLength = sizeof(JHI_RESPONSE);
+		res.data[0] = 0;
 
 		char* pAppid = NULL;
 		UINT8 ucAppID[LEN_APP_ID+1];
@@ -417,6 +421,7 @@ namespace intel_dal
 		JHI_RES_GET_SESSIONS_COUNT res_data;
 		JHI_CMD_GET_SESSIONS_COUNT* cmd_data = NULL;
 		res.dataLength = 0;
+		res.data[0] = 0;
 
 		char* pAppid = NULL;
 		UINT8 ucAppID[LEN_APP_ID+1];
@@ -485,6 +490,7 @@ namespace intel_dal
 		JHI_RESPONSE res;
 		JHI_RES_CREATE_SESSION res_data;
 		JHI_CMD_CREATE_SESSION* cmd_data = NULL;
+		res.data[0] = 0;
 
 		char* pAppid = NULL;
 		UINT8 ucAppID[LEN_APP_ID+1];
@@ -584,6 +590,7 @@ namespace intel_dal
 		JHI_RESPONSE res;
 		JHI_CMD_CLOSE_SESSION* cmd_data = NULL;
 		res.dataLength = sizeof(JHI_RESPONSE);
+		res.data[0] = 0;
 
 		do
 		{
@@ -623,6 +630,7 @@ namespace intel_dal
 		JHI_RESPONSE res;
 		JHI_CMD_SET_SESSION_EVENT_HANDLER* cmd_data = NULL;
 		res.dataLength = sizeof(JHI_RESPONSE);
+		res.data[0] = 0;
 		char* pHandleName = NULL;
 		
 		do
@@ -685,6 +693,7 @@ namespace intel_dal
 		JHI_RES_GET_SESSION_INFO res_data;
 		JHI_CMD_GET_SESSION_INFO* cmd_data = NULL;
 		res.dataLength = 0;
+		res.data[0] = 0;
 
 		memset(&res_data,0,sizeof(JHI_RES_GET_SESSION_INFO));
 
@@ -746,6 +755,7 @@ namespace intel_dal
 		JHI_SESSION_EXTENDED_INFO* sessionsOffset = NULL;
 		JHI_PROCESS_INFORMATION* OwnersListsOffset = NULL;
 		res.dataLength = 0;
+		res.data[0] = 0;
 
 		if (cmd->dataLength != inputSize)
 		{
@@ -874,6 +884,8 @@ error:
 		JHI_RES_GET_LOADED_APPLETS tmp;
 		char** outputGUIDs = NULL;
 		res.dataLength = 0;
+		res.data[0] = 0;
+
 		if (!outputData)
 		{
 			res.retCode = JHI_INTERNAL_ERROR;
@@ -968,6 +980,7 @@ error:
 		JHI_RES_GET_EVENT_DATA res_data;
 		JHI_CMD_GET_EVENT_DATA* cmd_data = NULL;
 		res.dataLength = 0;
+		res.data[0] = 0;
 		memset(&res_data,0,sizeof(JHI_RES_GET_EVENT_DATA));
 
 		JHI_EVENT_DATA event_data;
@@ -1034,6 +1047,7 @@ error:
 		JHI_RES_SEND_AND_RECIEVE res_data;
 		JHI_CMD_SEND_AND_RECIEVE* cmd_data = NULL;
 		res.dataLength = sizeof(JHI_RESPONSE);
+		res.data[0] = 0;
 		res_data.RecvBuffer_size = 0;
 		JVM_COMM_BUFFER IOBuffer;
 
@@ -1157,6 +1171,7 @@ error:
 		JHI_RES_GET_APPLET_PROPERTY res_data;
 		JHI_CMD_GET_APPLET_PROPERTY* cmd_data = NULL;
 		res.dataLength = sizeof(JHI_RESPONSE);
+		res.data[0] = 0;
 		res_data.RecvBuffer_size = 0;
 		JVM_COMM_BUFFER IOBuffer;
 
@@ -1306,6 +1321,7 @@ error:
 		JHI_RES_CREATE_SD_SESSION res_data;
 		JHI_CMD_CREATE_SD_SESSION* cmd_data = NULL;
 		res.dataLength = sizeof(JHI_RESPONSE);
+		res.data[0] = 0;
 		char* uuid = NULL;
 		JHI_VM_TYPE vmType = GlobalsManager::Instance().getVmType();
 
@@ -1401,6 +1417,7 @@ error:
 		JHI_RESPONSE res;
 		JHI_CMD_CLOSE_SD_SESSION* cmd_data = NULL;
 		res.dataLength = sizeof(JHI_RESPONSE);
+		res.data[0] = 0;
 		JHI_VM_TYPE vmType = GlobalsManager::Instance().getVmType();
 
 		do
@@ -1461,6 +1478,7 @@ error:
 		JHI_RESPONSE res;
 		JHI_CMD_SEND_CMD_PKG* cmdPkg = NULL;
 		res.dataLength = sizeof(JHI_RESPONSE);
+		res.data[0] = 0;
 		JHI_VM_TYPE vmType = GlobalsManager::Instance().getVmType();
 
 		do
@@ -1518,6 +1536,7 @@ error:
 		JHI_RES_LIST_INSTALLED_TAS res_data;		
 		JHI_CMD_LIST_INSTALLED_TAS* cmd_data = NULL;
 		res.dataLength = sizeof(JHI_RESPONSE);
+		res.data[0] = 0;
 		vector<string> uuids;
 		JHI_VM_TYPE vmType = GlobalsManager::Instance().getVmType();
 
@@ -1610,6 +1629,7 @@ error:
 		JHI_RES_LIST_INSTALLED_SDS res_data;
 		JHI_CMD_LIST_INSTALLED_SDS* cmd_data = NULL;
 		res.dataLength = sizeof(JHI_RESPONSE);
+		res.data[0] = 0;
 		vector<string> uuids;
 		JHI_VM_TYPE vmType = GlobalsManager::Instance().getVmType();
 
@@ -1700,6 +1720,7 @@ error:
 		JHI_VERSION_INFO* infoPtr = NULL;
 		JHI_RESPONSE res;
 		res.dataLength = sizeof(JHI_RESPONSE) + sizeof(JHI_VERSION_INFO);
+		res.data[0] = 0;
 
 		if (inputSize != sizeof(JHI_COMMAND))
 		{
@@ -1752,6 +1773,7 @@ error:
 		JHI_RESPONSE res = {0};
 		JHI_RES_QUERY_TEE_METADATA res_data = {0};
 		res.dataLength = sizeof(JHI_RESPONSE);
+		res.data[0] = 0;
 		JHI_VM_TYPE vmType = GlobalsManager::Instance().getVmType();
 
 		do
@@ -1828,6 +1850,7 @@ error:
 		JHI_RESPONSE res;
 		JHI_CMD_PROVISION_OEM_MASTER_KEY* cmd_data = NULL;
 		res.dataLength = sizeof(JHI_RESPONSE);
+		res.data[0] = 0;
 		JHI_VM_TYPE vmType = GlobalsManager::Instance().getVmType();
 
 		do
@@ -1883,6 +1906,7 @@ error:
 		JHI_RESPONSE res;
 		JHI_CMD_SET_TA_ENCRIPTION_KEY* cmd_data = NULL;
 		res.dataLength = sizeof(JHI_RESPONSE);
+		res.data[0] = 0;
 		JHI_VM_TYPE vmType = GlobalsManager::Instance().getVmType();
 
 		do

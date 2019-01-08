@@ -353,7 +353,8 @@ JHI_Initialize (
 			break;
 		}
 
-#ifdef _WIN32
+// When running over emulation, JHI runs as an application and not as a service
+#if defined(_WIN32) && !defined(SCHANNEL_OVER_SOCKET)
 		// verify the service is started before connecting it
 		startJHIService();
 #endif

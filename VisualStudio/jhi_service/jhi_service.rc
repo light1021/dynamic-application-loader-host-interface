@@ -1,6 +1,6 @@
 #include "jhi_version.h"
 #include "EventLogMessages.rc"
-
+#include "jhi.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 
@@ -36,7 +36,7 @@ BEGIN
             VALUE "LegalCopyright", "Copyright © 2010-" CURRENT_YEAR_STRING ", Intel Corporation. All rights reserved."
             VALUE "OriginalFilename", "jhi_service.exe"
             VALUE "ProductName", "Intel(R) Dynamic Application Loader Host Interface"
-            VALUE "ProductVersion", VER_PRODUCTVERSION_STR
+            VALUE "ProductVersion", JHI_VERSION
         END
     END
     BLOCK "VarFileInfo"
