@@ -42,7 +42,8 @@ TEEManagement64.dll   = 1
 TEETransport.dll      = 1
 
 [DestinationDirs]
-DAL.Files.13 = 13
+DAL_Files.amd64  = 11
+DAL_Files.x86  = 16425
 
 ;*****************************************
 ; Install Section
@@ -55,7 +56,7 @@ DAL.Files.13 = 13
 %DALDescription% = DALInstallSection.ntamd64, SWC\DBA4D603-D7ED-4931-8823-17AD585705D5
 
 [DALInstallSection.ntamd64]
-CopyFiles = DAL.Files.13
+CopyFiles = DAL_Files.amd64
 
 [DALInstallSection.ntamd64.Services]
 AddService = , 0x00000002
@@ -68,7 +69,7 @@ AddInterface="{DBA4D603-D7ED-4931-8823-17AD585705D5}", , DALInterfaceSection
 AddReg=DALInterfaceSection_AddReg
 
 [DALInterfaceSection_AddReg]
-HKR,,"jhi_service_path", %FLG_ADDREG_TYPE_EXPAND_SZ%, %13%
+HKR,,"jhi_service_path", %FLG_ADDREG_TYPE_EXPAND_SZ%, %11%
 
 ; -------------- DAL driver install sections
 [DAL_Service_Inst]
@@ -80,12 +81,12 @@ ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
 Dependencies   = TCPIP,iphlpsvc
 Security       = "D:(A;;LCRP;;;WD)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)"
 AddReg         = DAL_Service_AddReg
-ServiceBinary  = %13%\jhi_service.exe
+ServiceBinary  = %11%\jhi_service.exe
 
 
 [DAL_Service_AddReg]
 ; Locations
-HKR, Parameters, "FILELOCALE", %FLG_ADDREG_TYPE_EXPAND_SZ%, %13%
+HKR, Parameters, "FILELOCALE", %FLG_ADDREG_TYPE_EXPAND_SZ%, %11%
 HKR, Parameters, "APPLETSLOCALE", %FLG_ADDREG_TYPE_EXPAND_SZ%, %%ProgramData%%\Intel\DAL\Applets
 
 ; Delayed start
@@ -97,7 +98,7 @@ HKLM, "SYSTEM\CurrentControlSet\Services\eventlog\Application\IntelDalJhi", "Eve
 HKLM, "SYSTEM\CurrentControlSet\Services\eventlog\Application\IntelDalJhi", "TypesSupported", %FLG_ADDREG_TYPE_DWORD%, 7
 
 ; --------- Files ----------------------
-[DAL.Files.13]
+[DAL_Files.amd64]
 bhPlugin.dll
 bhPluginV2.dll
 jhi_service.exe
@@ -107,6 +108,10 @@ JHI.dll
 TEEManagement.dll
 JHI64.dll
 TEEManagement64.dll
+
+[DAL_Files.x86]
+JHI.dll
+TEEManagement.dll
 
 [Strings]
 SPSVCINST_ASSOCSERVICE= 0x00000002
