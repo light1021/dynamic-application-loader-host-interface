@@ -298,19 +298,13 @@ EXIT /B 0
 IF %is_X64_OS% EQU N (
 	copy jhi_service.exe "%DalPath_X86_OS%\jhi_service.exe" > NUL
 	copy JHI.dll "%DalPath_X86_OS%\JHI.dll" > NUL
-	copy bhPlugin.dll "%DalPath_X86_OS%\bhPlugin.dll" > NUL
-	copy bhPluginV2.dll "%DalPath_X86_OS%\bhPluginV2.dll" > NUL
 	copy TeeManagement.dll "%DalPath_X86_OS%\TeeManagement.dll" > NUL
 	copy SpoolerApplet.dalp "%DalPath_X86_OS%\SpoolerApplet.dalp" > NUL
-	copy TEETransport.dll "%DalPath_X86_OS%\TEETransport.dll" > NUL
 ) else (
 	copy jhi_service.exe "%DalPath_X64_OS_PRIMERY%\jhi_service.exe" > NUL
 	copy JHI.dll "%DalPath_X64_OS_PRIMERY%\JHI.dll" > NUL
-	copy bhPlugin.dll "%DalPath_X64_OS_PRIMERY%\bhPlugin.dll" > NUL
-	copy bhPluginV2.dll "%DalPath_X64_OS_PRIMERY%\bhPluginV2.dll" > NUL
 	copy TeeManagement.dll "%DalPath_X64_OS_PRIMERY%\TeeManagement.dll" > NUL
 	copy SpoolerApplet.dalp "%DalPath_X64_OS_PRIMERY%\SpoolerApplet.dalp" > NUL
-	copy TEETransport.dll "%DalPath_X64_OS_PRIMERY%\TEETransport.dll" > NUL
 	
 	copy JHI64.dll "%DalPath_X64_OS_SECONDERY%\JHI64.dll" > NUL
 	copy TeeManagement64.dll "%DalPath_X64_OS_SECONDERY%\TeeManagement64.dll" > NUL
@@ -451,10 +445,7 @@ set JHIFilesExist=Y
 call:CHECK_FILE_EXIST JHI_Service.exe
 call:CHECK_FILE_EXIST JHI.dll
 call:CHECK_FILE_EXIST SpoolerApplet.dalp
-call:CHECK_FILE_EXIST bhPlugin.dll
-call:CHECK_FILE_EXIST bhPluginV2.dll
 call:CHECK_FILE_EXIST TeeManagement.dll
-call:CHECK_FILE_EXIST TEETransport.dll
 IF %is_X64_OS% EQU Y call:CHECK_FILE_EXIST JHI64.dll
 IF %is_X64_OS% EQU Y call:CHECK_FILE_EXIST TeeManagement64.dll
 

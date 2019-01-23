@@ -31,15 +31,12 @@ DriverVer=03/20/2017,9999.99.0.0
 1 = %DiskId%
 
 [SourceDisksFiles]
-bhPlugin.dll          = 1
-bhPluginV2.dll        = 1
 JHI.dll               = 1
 JHI64.dll             = 1
 jhi_service.exe       = 1
 SpoolerApplet.dalp    = 1
 TEEManagement.dll     = 1
 TEEManagement64.dll   = 1
-TEETransport.dll      = 1
 
 [DestinationDirs]
 DAL_Files.amd64  = 11
@@ -99,11 +96,8 @@ HKLM, "SYSTEM\CurrentControlSet\Services\eventlog\Application\IntelDalJhi", "Typ
 
 ; --------- Files ----------------------
 [DAL_Files.amd64]
-bhPlugin.dll
-bhPluginV2.dll
 jhi_service.exe
 SpoolerApplet.dalp
-TEETransport.dll
 JHI.dll
 TEEManagement.dll
 JHI64.dll
