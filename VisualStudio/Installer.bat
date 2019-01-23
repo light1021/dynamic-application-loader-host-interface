@@ -191,7 +191,7 @@ IF %is_X64_OS% EQU N (
 	set JhiPath="C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\DAL%emulation_extension%"
 )
 
-set AppletsPath=C:\\ProgramData\\Intel\\DAL%emulation_extension%\\Applets
+set AppletsPath=%LOCALAPPDATA%\Intel\DAL%emulation_extension%\Applets
 
 set TempRegistryFile=add.reg
 
@@ -203,7 +203,7 @@ if [%sockets%]==[true] (
 
 IF EXIST %TempRegistryFile% DEL %TempRegistryFile%
 
-call:CreateAddRegistryFile %TempRegistryFile% %JhiPath% %AppletsPath% %TransportType%
+call:CreateAddRegistryFile %TempRegistryFile% %JhiPath% %AppletsPath:\=\\% %TransportType%
 
 REGEDIT /S %TempRegistryFile%
 
