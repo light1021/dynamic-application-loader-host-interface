@@ -88,7 +88,7 @@ ServiceBinary  = %11%\jhi_service.exe
 [DAL_Service_AddReg]
 ; Locations
 HKR, Parameters, "FILELOCALE", %FLG_ADDREG_TYPE_EXPAND_SZ%, %11%
-HKR, Parameters, "APPLETSLOCALE", %FLG_ADDREG_TYPE_EXPAND_SZ%, %%ProgramData%%\Intel\DAL\Applets
+HKR, Parameters, "APPLETSLOCALE", %FLG_ADDREG_TYPE_EXPAND_SZ%, %%LOCALAPPDATA%%\Intel\DAL\Applets
 
 ; Delayed start
 ; Disabled temporarily to work around a RS4 bug where the 'Security' definition above wasn't supported.
