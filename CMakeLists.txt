@@ -30,7 +30,7 @@ set(TEETRANSPORT_SOURCE_FILES
     thirdparty/libtee/linux/libteelinux.c
     thirdparty/libtee/linux/libmei/mei.c)
 
-add_library(teetransport SHARED ${TEETRANSPORT_SOURCE_FILES} ${TEETRANSPORT_HEADER_FILES})
+add_library(teetransport STATIC ${TEETRANSPORT_SOURCE_FILES} ${TEETRANSPORT_HEADER_FILES})
 
 target_include_directories(teetransport PUBLIC
     teetransport/transport/socket
@@ -48,13 +48,14 @@ target_include_directories(teetransport PUBLIC
 
 set(BHPLUGIN1_HEADER_FILES
     plugins/bhplugin1/jhi_plugin.h
-    plugins/bhplugin1/jhi_plugin_types.h)
+    plugins/bhplugin1/jhi_plugin_types.h
+    plugins/bhplugin1/jhi_plugin_register.h)
 
 set(BHPLUGIN1_SOURCE_FILES
     plugins/bhplugin1/jhi_plugin.cpp
     thirdparty/bhplugin1/Beihai/tools/jhi_lib/BeihaiPlugin.cpp)
 
-add_library(bhplugin1 SHARED ${BHPLUGIN1_SOURCE_FILES} ${BHPLUGIN1_HEADER_FILES})
+add_library(bhplugin1 STATIC ${BHPLUGIN1_SOURCE_FILES} ${BHPLUGIN1_HEADER_FILES})
 
 target_include_directories(bhplugin1 PUBLIC
     thirdparty/bhplugin1/Beihai/tools/jhi_lib
@@ -67,7 +68,8 @@ target_include_directories(bhplugin1 PUBLIC
 
 set(BHPLUGIN2_HEADER_FILES
     plugins/bhplugin2/jhi_plugin.h
-    plugins/bhplugin2/jhi_plugin_internal.h)
+    plugins/bhplugin2/jhi_plugin_internal.h
+    plugins/bhplugin2/jhi_plugin_register.h)
 
 set(BHPLUGIN2_SOURCE_FILES
     plugins/bhplugin2/jhi_plugin.cpp
@@ -79,7 +81,7 @@ set(BHPLUGIN2_SOURCE_FILES
     thirdparty/bhplugin2/FW/src/apps/dal_ivm/Beihai/shared/admin_pack/admin_pack_ext.c
     thirdparty/bhplugin2/FW/src/apps/dal_ivm/Beihai/shared/admin_pack/admin_pack_int.c)
 
-add_library(bhplugin2 SHARED ${BHPLUGIN2_SOURCE_FILES} ${BHPLUGIN2_HEADER_FILES})
+add_library(bhplugin2 STATIC ${BHPLUGIN2_SOURCE_FILES} ${BHPLUGIN2_HEADER_FILES})
 
 target_include_directories(bhplugin2 PUBLIC
     thirdparty/bhplugin2/FW/src/apps/dal_ivm/Beihai/bhp/include
@@ -147,11 +149,9 @@ set(JHID_SOURCE_FILES
     service/ReadWriteLockPThread.cpp
     service/init.cpp
     service/EventManager.cpp
-    service/jhi_plugin_loader.cpp
     service/AppletsManager.cpp
     service/SessionsManager.cpp
     service/install.cpp
-    service/DLL_Loader.cpp
     service/AppletsPackageReader.cpp
     service/uninstall.cpp
     service/appProp.cpp
@@ -183,10 +183,12 @@ target_include_directories(jhid PUBLIC
     thirdparty/bhplugin2/FW/src/apps/dal_ivm
     common/FWUpdate
     common/include
+    plugins
     external/libb64-1.2/include
     ${LIBXML2_INCLUDE_DIR})
 
-target_link_libraries(jhid pthread dl teetransport uuid xml2)
+link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+target_link_libraries(jhid pthread dl teetransport bhplugin1 bhplugin2 uuid xml2)
 
 if(${INIT_SYSTEM} MATCHES SysVinit)
     target_compile_definitions(jhid PUBLIC SYSVINIT)
@@ -272,11 +274,8 @@ install(TARGETS
     DESTINATION ${BINDIR})
 
 install(TARGETS
-    bhplugin1
-    bhplugin2
     jhi
     teemanagement
-    teetransport
     DESTINATION ${LIBDIR})
 
 install(FILES

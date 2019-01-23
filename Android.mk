@@ -34,7 +34,7 @@ LOCAL_MODULE_OWNER := intel
 
 LOCAL_CFLAGS += -DDEBUG
 
-include $(BUILD_SHARED_LIBRARY)
+include $(BUILD_STATIC_LIBRARY)
 
 ###################
 #   bhplugin1.so  #
@@ -55,7 +55,8 @@ LOCAL_C_INCLUDES := \
     $(LOCAL_PATH)/thirdparty/bhplugin2/FW/src/apps/dal_ivm \
     $(LOCAL_PATH)/common/include
 
-LOCAL_SHARED_LIBRARIES := libteetransport liblog
+LOCAL_STATIC_LIBRARIES := libteetransport
+LOCAL_SHARED_LIBRARIES := liblog
 
 LOCAL_MODULE_TAGS := optional
 LOCAL_PROPRIETARY_MODULE := true
@@ -64,7 +65,7 @@ LOCAL_MODULE_OWNER := intel
 LOCAL_CPPFLAGS := -fexceptions
 LOCAL_CFLAGS += -DDEBUG
 
-include $(BUILD_SHARED_LIBRARY)
+include $(BUILD_STATIC_LIBRARY)
 
 ####################
 #   bhplugin2.so   #
@@ -97,7 +98,8 @@ LOCAL_C_INCLUDES := \
     $(LOCAL_PATH)/common/include \
     $(LOCAL_PATH)/plugins/bhplugin2
 
-LOCAL_SHARED_LIBRARIES := libteetransport liblog
+LOCAL_STATIC_LIBRARIES := libteetransport
+LOCAL_SHARED_LIBRARIES := liblog
 
 LOCAL_MODULE_TAGS:= optional
 LOCAL_PROPRIETARY_MODULE := true
@@ -106,7 +108,7 @@ LOCAL_MODULE_OWNER := intel
 LOCAL_CPPFLAGS := -fexceptions
 LOCAL_CFLAGS += -DDEBUG
 
-include $(BUILD_SHARED_LIBRARY)
+include $(BUILD_STATIC_LIBRARY)
 
 ##########################
 #   SpoolerApplet.dalp   #
@@ -200,7 +202,6 @@ LOCAL_SRC_FILES := \
     service/CommandDispatcher.cpp \
     service/CommandsServerSocketsAndroid.cpp \
     service/createSession.cpp \
-    service/DLL_Loader.cpp \
     service/EventManager.cpp \
     service/FWInfoLinux.cpp \
     service/getSCount.cpp \
@@ -209,7 +210,6 @@ LOCAL_SRC_FILES := \
     service/init.cpp \
     service/install.cpp \
     service/JHIMain.cpp \
-    service/jhi_plugin_loader.cpp \
     service/SendCmdPkg.cpp \
     service/LinuxService.cpp \
     service/ReadWriteLockPThread.cpp \
@@ -231,10 +231,11 @@ LOCAL_C_INCLUDES := \
     $(LOCAL_PATH)/external/libxml2/include \
     $(LOCAL_PATH)/external/libb64-1.2/include \
     $(LOCAL_PATH)/external \
+    $(LOCAL_PATH)/plugins \
     $(LOCAL_PATH)/thirdparty/bhplugin2/FW/src/apps/dal_ivm
 
-LOCAL_STATIC_LIBRARIES := jhi_uuid jhi_libxml2 libb64
-LOCAL_SHARED_LIBRARIES := libdl liblog libteetransport
+LOCAL_STATIC_LIBRARIES := jhi_uuid jhi_libxml2 libb64 libbhplugin1 libbhplugin2 libteetransport
+LOCAL_SHARED_LIBRARIES := libdl liblog 
 
 LOCAL_CPPFLAGS := -fexceptions
 
