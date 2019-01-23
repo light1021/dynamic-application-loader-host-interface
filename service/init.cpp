@@ -45,6 +45,8 @@
 #include "string_s.h"
 #include "IFirmwareInfo.h"
 #include "FWInfoFactory.h"
+#include "bhplugin1/jhi_plugin_register.h"
+#include "bhplugin2/jhi_plugin_register.h"
 
 #ifdef _WIN32
 #include "Win32Service.h" // for heci driver events
@@ -365,6 +367,27 @@ VERSION discoverFwVersionLegacy()
 	return fwVersion;
 }
 
+bool pluginRegister(JHI_VM_TYPE vmType, VM_Plugin_interface** plugin_table)
+{
+
+	if (plugin_table == NULL)
+		return false;
+
+	switch (vmType)
+	{
+	case JHI_VM_TYPE_BEIHAI_V1:
+		Jhi_Plugin_1::pluginRegister(plugin_table);
+		break;
+	case JHI_VM_TYPE_BEIHAI_V2:
+		Jhi_Plugin_2::pluginRegister(plugin_table);
+		break;
+	default:
+		return false;
+	}
+
+	return true;
+}
+
 //-------------------------------------------------------------------------------
 // Function: jhis_init
 //		  First interface to be called by IHA or any external vendor
@@ -447,27 +470,13 @@ JHI_RET_I jhis_init()
 #endif // _WIN32
 
 	// Register the plugin (BeihaiV1 vs BeihaiV2)
-	if (!GlobalsManager::Instance().isPluginRegistered())
+	if (!pluginRegister(vmType, &plugin) || plugin == NULL)
 	{
-		ulRetCode = GlobalsManager::Instance().PluginRegister();
-		if (ulRetCode != JHI_SUCCESS)
-		{
-			LOG0("Error: JhiPlugin_Register() failed");
-			goto end;
-		}
-	}
-	else
-	{
-		// do not register the plugin more than once;
-		TRACE0("VM Plugin is already registered, skipping registration");
-	}
-
-	GlobalsManager::Instance().getPluginTable(&plugin);
-	if (plugin == NULL)
-	{
+		LOG0("Error: pluginRegister() failed");
 		ulRetCode = JHI_INTERNAL_ERROR;
 		goto end;
 	}
+	GlobalsManager::Instance().setPluginTable(plugin);
 
 	JHI_PLUGIN_MEMORY_API plugin_memory_api;
 
@@ -550,11 +559,6 @@ end:
 			plugin->JHI_Plugin_DeInit(do_vm_reset);
 		}
 
-		if(GlobalsManager::Instance().isPluginRegistered())
-		{
-			GlobalsManager::Instance().PluginUnregister();
-		}
-
 		// Init failed. Log an error.
 		WriteToEventLog(JHI_EVENT_LOG_ERROR, MSG_INIT_FAILURE);
 		LOG0("JHI init failed");
@@ -616,8 +620,6 @@ void JhiReset()
 		{
 			TRACE1("Error: VM Plugin Deinit failed: 0x%X",ret);
 		}
-
-		GlobalsManager::Instance().PluginUnregister();
 	}
 
 #ifdef _WIN32

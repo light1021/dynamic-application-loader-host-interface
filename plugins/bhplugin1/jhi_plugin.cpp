@@ -37,6 +37,7 @@
 */
 #include "beihai.h"
 #include "jhi_plugin.h"
+#include "jhi_plugin_register.h"
 #include "dbg.h"
 #include "teemanagement.h"
 
@@ -56,29 +57,26 @@ using namespace std;
     #define PROFILING_ARGS
 #endif // JHI_MEMORY_PROFILING
 
-//------------------------------------------------------------------------------
-// first-time register of plugin callbacks
-//------------------------------------------------------------------------------
-UINT32 pluginRegister(VM_Plugin_interface** plugin)
-{
-	TRACE0("pluginRegister start");
-	JHI_RET ulRetCode = JHI_INVALID_PARAMS ;
-
-	if (plugin == NULL)
-		goto end;
-
-	*plugin = &Jhi_Plugin::BeihaiPlugin::Instance();
-
-	ulRetCode = JHI_SUCCESS;
-
-end:
-	TRACE1("pluginRegister end, result = 0x%X", ulRetCode);
-	return ulRetCode ;
-}
-
-namespace Jhi_Plugin
+namespace Jhi_Plugin_1
 {
 	TEE_TRANSPORT_INTERFACE BeihaiPlugin::transport_interface = {0};
+
+	UINT32 pluginRegister(VM_Plugin_interface** plugin)
+	{
+		TRACE0("pluginRegister start");
+		JHI_RET ulRetCode = JHI_INVALID_PARAMS;
+
+		if (plugin == NULL)
+			goto end;
+
+		*plugin = &BeihaiPlugin::Instance();
+
+		ulRetCode = JHI_SUCCESS;
+
+	end:
+		TRACE1("pluginRegister end, result = 0x%X", ulRetCode);
+		return ulRetCode;
+	}
 
 	BeihaiPlugin::BeihaiPlugin()
 	{
@@ -638,10 +636,13 @@ cleanup:
 			jhiError = JHI_NO_CONNECTION_TO_FIRMWARE;
 			break;
 
+		case BHE_WD_TIMEOUT:
+			jhiError = JHI_APPLET_TIMEOUT;
+			break;
+
 		case HAL_OUT_OF_MEMORY:
 		case BHE_UNCAUGHT_EXCEPTION:
 		case BHE_APPLET_CRASHED:
-		case BHE_WD_TIMEOUT:
 		case HAL_TIMED_OUT:
 			jhiError = JHI_APPLET_FATAL;
 			break;

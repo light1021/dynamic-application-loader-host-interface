@@ -71,7 +71,6 @@
     <ClInclude Include="..\..\service\CommandsServerFactory.h" />
     <ClInclude Include="..\..\service\CommandsServerSocketsWin32.h" />
     <ClInclude Include="..\..\service\dalpSchema.h" />
-    <ClInclude Include="..\..\service\DLL_Loader.h" />
     <ClInclude Include="..\..\service\EventLog.h" />
     <ClInclude Include="..\..\service\EventLogMessages.h" />
     <ClInclude Include="..\..\service\EventManager.h" />
@@ -84,7 +83,6 @@
     <ClInclude Include="..\..\service\IFirmwareInfo.h" />
     <ClInclude Include="..\..\service\IXmlReader.h" />
     <ClInclude Include="..\..\service\JHIMain.h" />
-    <ClInclude Include="..\..\service\jhi_plugin_loader.h" />
     <ClInclude Include="..\..\service\jhi_service.h" />
     <ClInclude Include="..\..\service\MailBox.h" />
     <ClInclude Include="..\..\service\ReadWriteLock.h" />
@@ -110,7 +108,6 @@
     <ClCompile Include="..\..\service\CommandDispatcher.cpp" />
     <ClCompile Include="..\..\service\CommandsServerSocketsWin32.cpp" />
     <ClCompile Include="..\..\service\createSession.cpp" />
-    <ClCompile Include="..\..\service\DLL_Loader.cpp" />
     <ClCompile Include="..\..\service\EventLog.cpp" />
     <ClCompile Include="..\..\service\EventManager.cpp" />
     <ClCompile Include="..\..\service\FWInfoWin32.cpp" />
@@ -121,7 +118,6 @@
     <ClCompile Include="..\..\service\init.cpp" />
     <ClCompile Include="..\..\service\install.cpp" />
     <ClCompile Include="..\..\service\JHIMain.cpp" />
-    <ClCompile Include="..\..\service\jhi_plugin_loader.cpp" />
     <ClCompile Include="..\..\service\MailBox.cpp" />
     <ClCompile Include="..\..\service\ReadWriteLock.cpp" />
     <ClCompile Include="..\..\service\sar.cpp" />
@@ -219,6 +215,12 @@
     <None Include="API Instrumentation\Instructions.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\plugins\bhplugin1\bhplugin1.vcxproj">
+      <Project>{8a3b47d5-3472-49de-9244-33aea9911931}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\plugins\bhplugin2\bhplugin2.vcxproj">
+      <Project>{9012a721-1fbb-47ef-8ab8-03915f2e32ba}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\teetransport\TeeTransport.vcxproj">
       <Project>{e6e1fc4b-51bc-4990-8172-120344173036}</Project>
     </ProjectReference>
@@ -432,7 +434,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>JHI_ENGINEERING=1$(JHI_ENGINEERING);WIN32;WIN32_LEAN_AND_MEAN;TRACER_NAME="JHI_Service: ";DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);CS_SOCKETS_COMMUNICATION;SCHANNEL_OVER_HECI</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\plugins;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -453,7 +455,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>JHI_ENGINEERING=1$(JHI_ENGINEERING);WIN32;WIN32_LEAN_AND_MEAN;TRACER_NAME="JHI_Service: ";DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);CS_SOCKETS_COMMUNICATION;SCHANNEL_OVER_HECI</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\plugins;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -474,7 +476,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>NEW_REG_LOCATION;JHI_ENGINEERING=1$(JHI_ENGINEERING);WIN32;WIN32_LEAN_AND_MEAN;TRACER_NAME="JHI_Service: ";DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);CS_SOCKETS_COMMUNICATION;SCHANNEL_OVER_HECI</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\plugins;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -498,7 +500,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>NEW_REG_LOCATION;JHI_ENGINEERING=1$(JHI_ENGINEERING);WIN32;WIN32_LEAN_AND_MEAN;TRACER_NAME="JHI_Service: ";DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);CS_SOCKETS_COMMUNICATION;SCHANNEL_OVER_HECI</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\plugins;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -522,7 +524,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>JHI_ENGINEERING=1$(JHI_ENGINEERING);WIN32;WIN32_LEAN_AND_MEAN;TRACER_NAME="JHI_Service: ";_DEBUG;DEBUG;_CONSOLE;%(PreprocessorDefinitions);CS_SOCKETS_COMMUNICATION;SCHANNEL_OVER_SOCKET</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;$(SolutionDir)\..\..\lib\TEELibraries\TEETransport;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\plugins;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;$(SolutionDir)\..\..\lib\TEELibraries\TEETransport;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnablePREfast>false</EnablePREfast>
       <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
@@ -544,7 +546,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>JHI_ENGINEERING=1$(JHI_ENGINEERING);WIN32;WIN32_LEAN_AND_MEAN;TRACER_NAME="JHI_Service: ";_DEBUG;DEBUG;_CONSOLE;%(PreprocessorDefinitions);CS_SOCKETS_COMMUNICATION;SCHANNEL_OVER_SOCKET</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;$(SolutionDir)\..\..\lib\TEELibraries\TEETransport;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\plugins;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;$(SolutionDir)\..\..\lib\TEELibraries\TEETransport;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnablePREfast>false</EnablePREfast>
       <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
@@ -568,7 +570,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>JHI_ENGINEERING=1$(JHI_ENGINEERING);WIN32;WIN32_LEAN_AND_MEAN;TRACER_NAME="JHI_Service: ";_CONSOLE;%(PreprocessorDefinitions);CS_SOCKETS_COMMUNICATION;SCHANNEL_OVER_HECI</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\plugins;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -593,7 +595,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NEW_REG_LOCATION;JHI_ENGINEERING=1$(JHI_ENGINEERING);WIN32;WIN32_LEAN_AND_MEAN;TRACER_NAME="JHI_Service: ";_CONSOLE;%(PreprocessorDefinitions);CS_SOCKETS_COMMUNICATION;SCHANNEL_OVER_HECI</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\plugins;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -621,7 +623,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>JHI_ENGINEERING=1$(JHI_ENGINEERING);WIN32;WIN32_LEAN_AND_MEAN;TRACER_NAME="JHI_Service: ";_CONSOLE;%(PreprocessorDefinitions);CS_SOCKETS_COMMUNICATION;SCHANNEL_OVER_HECI</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\plugins;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -646,7 +648,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NEW_REG_LOCATION;JHI_ENGINEERING=1$(JHI_ENGINEERING);WIN32;WIN32_LEAN_AND_MEAN;TRACER_NAME="JHI_Service: ";_CONSOLE;%(PreprocessorDefinitions);CS_SOCKETS_COMMUNICATION;SCHANNEL_OVER_HECI</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\plugins;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -674,7 +676,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>JHI_ENGINEERING=1$(JHI_ENGINEERING);WIN32;WIN32_LEAN_AND_MEAN;TRACER_NAME="JHI_Service: ";_CONSOLE;%(PreprocessorDefinitions);CS_SOCKETS_COMMUNICATION;SCHANNEL_OVER_SOCKET</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\plugins;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -699,7 +701,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>JHI_ENGINEERING=1$(JHI_ENGINEERING);WIN32;WIN32_LEAN_AND_MEAN;TRACER_NAME="JHI_Service: ";_CONSOLE;%(PreprocessorDefinitions);CS_SOCKETS_COMMUNICATION;SCHANNEL_OVER_SOCKET</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\common\include;$(SolutionDir)..\common\FWUpdate;$(SolutionDir)API Instrumentation;$(SolutionDir)..\plugins;$(SolutionDir)..\thirdparty\bhplugin2\include;$(SolutionDir)..\thirdparty\bhplugin2\FW\src\apps\dal_ivm;$(SolutionDir)..\service;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
