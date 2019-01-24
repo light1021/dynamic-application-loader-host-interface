@@ -39,7 +39,7 @@ TEEManagement.dll     = 1
 TEEManagement64.dll   = 1
 
 [DestinationDirs]
-DAL_Files.amd64  = 11
+DefaultDestDir  = 11
 DAL_Files.x86  = 16425
 
 ;*****************************************
@@ -84,7 +84,7 @@ ServiceBinary  = %11%\jhi_service.exe
 
 [DAL_Service_AddReg]
 ; Locations
-HKR, Parameters, "FILELOCALE", %FLG_ADDREG_TYPE_EXPAND_SZ%, %11%
+HKR, Parameters, "FILELOCALE", %FLG_ADDREG_TYPE_EXPAND_SZ%, %%SystemRoot%%\System32
 HKR, Parameters, "APPLETSLOCALE", %FLG_ADDREG_TYPE_EXPAND_SZ%, %%LOCALAPPDATA%%\Intel\DAL\Applets
 
 ; Delayed start
@@ -97,10 +97,10 @@ HKLM, "SYSTEM\CurrentControlSet\Services\eventlog\Application\IntelDalJhi", "Typ
 
 ; --------- Files ----------------------
 [DAL_Files.amd64]
+JHI.dll,JHI64.dll
 jhi_service.exe
 SpoolerApplet.dalp
-JHI.dll
-TEEManagement.dll
+TEEManagement.dll,TEEManagement64.dll
 JHI64.dll
 TEEManagement64.dll
 
