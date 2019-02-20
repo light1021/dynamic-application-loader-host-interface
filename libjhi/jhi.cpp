@@ -1272,7 +1272,7 @@ JHI_GetSessionTable(OUT JHI_SESSIONS_DATA_TABLE** SessionDataTable)
 
 	CommandInvoker cInvoker;
 
-	// calls the setvice to get session data table
+	// calls the service to get session data table
 	rc  = cInvoker.JhisGetSessionTable(SessionDataTable);
 	
 	if (JHI_SUCCESS != rc )

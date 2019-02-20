@@ -45,7 +45,7 @@ extern "C" {
 #include "typedefs.h"
 
 // Format: Major.Minor.ReverseDate
-#define JHI_VERSION "1.30.20190108"
+#define JHI_VERSION "1.31.20190220"
 
 //------------------------------------------------------------
 // Common & External Interfaces
@@ -146,8 +146,8 @@ typedef  PVOID   JHI_SESSION_HANDLE;
 #define JHI_INSUFFICIENT_BUFFER					0x200					// buffer overflow - response greater than supplied Rx buffer
 #define JHI_APPLET_FATAL						0x400					// This may be a result of uncaught exception or unusual applet 
 																		// error that results in applet being terminated by VM.
-#define JHI_APPLET_TIMEOUT						0x401					// This may be a result of a Java code in VM in an infinite loop. 
-																		// VM will kill applet in JOM and return error code
+#define JHI_APPLET_TIMEOUT						0x401					// this error will be returned if the TA execution time exceeds the time allowed in the TA’s manifest.
+																		// In this case, the TA execution will be terminated, and its session will be closed.
 #define JHI_APPLET_BAD_STATE					0x407					// Applet in bad state, need to reopen the session
 
 // Register/Unregister session events

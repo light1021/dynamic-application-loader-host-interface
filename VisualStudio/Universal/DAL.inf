@@ -39,7 +39,8 @@ TEEManagement.dll     = 1
 TEEManagement64.dll   = 1
 
 [DestinationDirs]
-DefaultDestDir  = 11
+DAL.Files.13 = 13
+DAL_Files.amd64  = 11
 DAL_Files.x86  = 16425
 
 ;*****************************************
@@ -53,6 +54,7 @@ DAL_Files.x86  = 16425
 %DALDescription% = DALInstallSection.ntamd64, SWC\3C4852D6-D47B-4F46-B05E-B5EDC1AA440E
 
 [DALInstallSection.ntamd64]
+CopyFiles = DAL.Files.13
 CopyFiles = DAL_Files.x86
 CopyFiles = DAL_Files.amd64
 
@@ -67,7 +69,7 @@ AddInterface="{3C4852D6-D47B-4F46-B05E-B5EDC1AA440E}", , DALInterfaceSection
 AddReg=DALInterfaceSection_AddReg
 
 [DALInterfaceSection_AddReg]
-HKR,,"jhi_service_path", %FLG_ADDREG_TYPE_EXPAND_SZ%, %11%
+HKR,,"jhi_service_path", %FLG_ADDREG_TYPE_EXPAND_SZ%, %13%
 
 ; -------------- DAL driver install sections
 [DAL_Service_Inst]
@@ -79,12 +81,12 @@ ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
 Dependencies   = TCPIP,iphlpsvc
 Security       = "D:(A;;LCRP;;;WD)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)"
 AddReg         = DAL_Service_AddReg
-ServiceBinary  = %11%\jhi_service.exe
+ServiceBinary  = %13%\jhi_service.exe
 
 
 [DAL_Service_AddReg]
 ; Locations
-HKR, Parameters, "FILELOCALE", %FLG_ADDREG_TYPE_EXPAND_SZ%, %%SystemRoot%%\System32
+HKR, Parameters, "FILELOCALE", %FLG_ADDREG_TYPE_EXPAND_SZ%, %13%
 HKR, Parameters, "APPLETSLOCALE", %FLG_ADDREG_TYPE_EXPAND_SZ%, %%LOCALAPPDATA%%\Intel\DAL\Applets
 
 ; Delayed start
@@ -96,11 +98,11 @@ HKLM, "SYSTEM\CurrentControlSet\Services\eventlog\Application\IntelDalJhi", "Eve
 HKLM, "SYSTEM\CurrentControlSet\Services\eventlog\Application\IntelDalJhi", "TypesSupported", %FLG_ADDREG_TYPE_DWORD%, 7
 
 ; --------- Files ----------------------
-[DAL_Files.amd64]
-JHI.dll,JHI64.dll
+[DAL.Files.13]
 jhi_service.exe
 SpoolerApplet.dalp
-TEEManagement.dll,TEEManagement64.dll
+JHI.dll
+TEEManagement.dll
 JHI64.dll
 TEEManagement64.dll
 
@@ -108,13 +110,17 @@ TEEManagement64.dll
 JHI.dll
 TEEManagement.dll
 
+[DAL_Files.amd64]
+JHI64.dll
+TEEManagement64.dll
+
 [Strings]
-SPSVCINST_ASSOCSERVICE= 0x00000002
-SPSVCSINST_STARTSERVICE= 0x00000800
+SPSVCINST_ASSOCSERVICE=0x00000002
+SPSVCSINST_STARTSERVICE=0x00000800
 FLG_ADDREG_TYPE_DWORD=0x00010001
 FLG_ADDREG_TYPE_EXPAND_SZ=0x00020000 
 FLG_ADDREG_TYPE_SZ=0x00000000 
 
 DALDescription="Intel(R) Dynamic Application Loader Host Interface"
-DiskId = "Intel(R) Dynamic Application Loader Host Interface Installation Disk"
+DiskId="Intel(R) Dynamic Application Loader Host Interface Installation Disk"
 ManufacturerName="Intel"
