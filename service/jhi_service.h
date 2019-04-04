@@ -39,7 +39,7 @@
 #define __JHI_SERVICE_H__
 
 #include "jhi_i.h"
-#include "jhi_plugin_loader.h"
+#include "plugin_interface.h"
 
 
 #define JHI_EVENT_DATA_BUFFER_SIZE 1024

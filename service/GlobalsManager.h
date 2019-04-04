@@ -66,8 +66,6 @@ namespace intel_dal
 		FILESTRING plugin_folder;		// contains a full path to the location of the plugin library
 		FILESTRING spooler_folder;		// contains a full path to the location of the Spooler Applet directory
 #endif
-		bool plugin_registered;			// used to determine if vm plugin is loaded and registered.
-		bool transport_registered;		// used to determine if the transport layer is loaded and registered.
 		VM_Plugin_interface* plugin_table;	// contains the functions for communication with the VM
 
 		TEE_TRANSPORT_TYPE transportType;	// the transport type to communicate with DAL (HECI / sockets)
@@ -177,24 +175,12 @@ namespace intel_dal
 		bool getPluginTable(VM_Plugin_interface** plugin_table);
 
 		/*
-			Returns whether the VM plugin was registered or not.
+		set the plugin table that contains the API to communicate with the FW
+		Paramters:
+		plugin_table		[In]			the plugin table
 		*/
-		bool isPluginRegistered();
+		void setPluginTable(VM_Plugin_interface* plugin_table);
 
-		/*
-			sets the plugin table that contains the API to communicate with the VM
-		*/
-		JHI_RET PluginRegister();
-
-		/*
-			Removes the plugin table that contains the API to communicate with the VM
-		*/
-		void PluginUnregister();
-
-		/*
-			Returns whether the transport was registered or not.
-		*/
-		bool isTransportRegistered();
 		/*
 			set the jhi state
 			Paramters:

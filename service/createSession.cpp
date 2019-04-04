@@ -179,8 +179,9 @@ jhis_create_session(
 			for (list<vector<uint8_t> >::iterator it = appletBlobs.begin(); it != appletBlobs.end(); ++it)
 			{
 				ulRetCode = plugin->JHI_Plugin_CreateSession(pAppId, &VMSessionHandle, &(*it)[0], (unsigned int)(*it).size(), newSessionID, initBuffer);
-				if (ulRetCode == JHI_SUCCESS || ulRetCode == JHI_MAX_INSTALLED_APPLETS_REACHED || ulRetCode == JHI_MAX_SESSIONS_REACHED)
+				if (ulRetCode == JHI_SUCCESS || ulRetCode == JHI_MAX_INSTALLED_APPLETS_REACHED || ulRetCode == JHI_MAX_SESSIONS_REACHED || ulRetCode == JHI_APPLET_FATAL)
 				{
+					// With these return codes there is no reason to continue trying
 					break; // break just out of the for loop
 				}
 			}

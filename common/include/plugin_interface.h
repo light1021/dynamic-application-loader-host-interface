@@ -109,15 +109,6 @@ extern "C" {
 		PVOID pluginCtx;
 	};
 
-	// Plugin Register function
-#ifdef JHI_PLUGIN
-	// Register funtion that should be exported by the plugin
-	UINT32 __declspec(dllexport) pluginRegister(OUT VM_Plugin_interface** plugin);
-#else
-	// used by jhi service to dynamically call the dll register function
-	typedef int (*PFN_pluginRegister) (VM_Plugin_interface** plugin);
-#endif // JHI_PLUGIN
-
 #ifdef __cplusplus
 };
 #endif // __cplusplus

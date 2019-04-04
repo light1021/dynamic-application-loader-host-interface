@@ -58,28 +58,7 @@ using namespace std;
 #include "string_s.h"
 #endif //_WIN32
 
-//------------------------------------------------------------------------------
-// first-time register of plugin callbacks
-//------------------------------------------------------------------------------
-extern "C"
-UINT32 pluginRegister(VM_Plugin_interface** plugin)
-{
-	TRACE0("pluginRegister start");
-	JHI_RET ulRetCode = JHI_INVALID_PARAMS ;
-
-	if (plugin == NULL)
-		goto end;
-
-	*plugin = &Jhi_Plugin::BeihaiPlugin::Instance();
-
-	ulRetCode = JHI_SUCCESS;
-
-end:
-	TRACE1("pluginRegister end, result = 0x%X", ulRetCode);
-	return ulRetCode ;
-}
-
-namespace Jhi_Plugin
+namespace Jhi_Plugin_2
 {
 	// a dirty patch for Android where this function is not present
 #ifdef __ANDROID__
@@ -94,6 +73,23 @@ namespace Jhi_Plugin
 
 	//declaring the static var
 	TEE_TRANSPORT_INTERFACE BeihaiPlugin::transport_interface = {0};
+
+	UINT32 pluginRegister(VM_Plugin_interface** plugin)
+	{
+		TRACE0("pluginRegister start");
+		JHI_RET ulRetCode = JHI_INVALID_PARAMS;
+
+		if (plugin == NULL)
+			goto end;
+
+		*plugin = &BeihaiPlugin::Instance();
+
+		ulRetCode = JHI_SUCCESS;
+
+	end:
+		TRACE1("pluginRegister end, result = 0x%X", ulRetCode);
+		return ulRetCode;
+	}
 
 	int BeihaiPlugin::sendWrapper(uintptr_t handle, uint8_t* buffer, uint32_t length)
 	{
@@ -1847,6 +1843,7 @@ cleanup:
 
 
 			//VM Applet instance error code section: //0x400					
+		case	BHE_APPLET_GENERIC:					str = "BHE_APPLET_GENERIC";					break;	//0x400
 		case	BHE_UNCAUGHT_EXCEPTION:				str = "BHE_UNCAUGHT_EXCEPTION";				break;	//0x401											
 			/* Bad parameters to applet */					
 		case	BHE_APPLET_BAD_PARAMETER:			str = "BHE_APPLET_BAD_PARAMETER";			break;	//0x402											

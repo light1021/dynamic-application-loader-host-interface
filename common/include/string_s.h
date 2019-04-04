@@ -52,6 +52,13 @@ typedef int        errno_t;
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+static inline int set_errno(errno_t err)
+{
+	errno = err;
+	return -1;
+}
+
 /* Redifine Win32 secure string functions to Posix */
 static inline errno_t memcpy_s(void *dest, size_t dest_cnt, const void *src, size_t n)
 {
@@ -84,7 +91,7 @@ static inline int _waccess_s(const char *path, int mode)
 static inline int _wremove(const char *path)
 {
 	if (path == NULL)
-		return EINVAL;
+		return set_errno(EINVAL);
 	return remove(path);
 }
 
@@ -98,9 +105,9 @@ static inline int _wrename(const char *oldname, const char *newname)
 static inline int sprintf_s(char *str, size_t size, const char *format, ...)
 {
 	if (str == NULL || format == NULL)
-		return EINVAL;
+		return set_errno(EINVAL);
 	if (size == 0)
-		return ERANGE;
+		return set_errno(ERANGE);
 
 	va_list va;
 	va_start(va, format);
@@ -113,9 +120,9 @@ static inline int strnlen_s(const char *dest, size_t dmax)
 {
     size_t count;
 
-    if (dest == NULL) return EINVAL;
-    if (dmax == 0) return EINVAL;
-    if (dmax > RSIZE_MAX_STR) return EINVAL;
+    if (dest == NULL) return 0;
+    if (dmax == 0) return 0;
+    if (dmax > RSIZE_MAX_STR) return 0;
 
     count = 0;
     while (*dest && dmax)

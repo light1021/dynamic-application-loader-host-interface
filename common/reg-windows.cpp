@@ -41,6 +41,7 @@
 #include "reg.h"
 
 #ifdef NEW_REG_LOCATION
+#include <winsvc.h>
 
 #ifdef SCHANNEL_OVER_SOCKET // emulation mode
 #define REGISTRY_PATH  "SYSTEM\\CurrentControlSet\\Services\\jhi_service_emulation"
@@ -58,7 +59,13 @@
 
 #endif //NEW_REG_LOCATION
 
+// Changing registry location for emulation mode so the registry values will be writeable with user permissions as well. 
+#ifdef SCHANNEL_OVER_SOCKET // emulation mode.
+#define REGISTRY_BASE  HKEY_CURRENT_USER
+#else
 #define REGISTRY_BASE  HKEY_LOCAL_MACHINE
+#endif
+
 
 // jhi registry keys
 #define KEY_JHI_FILES_PATH L"FILELOCALE"
@@ -79,9 +86,7 @@ bool readStringFromRegistry(const wchar_t* value, wchar_t* outBuffer, uint32_t o
 	DWORD dwType;
 	DWORD dwSize = outBufferSize;
 
-	long ret = RegGetValue(REGISTRY_BASE, TEXT(REGISTRY_PATH), value, RRF_RT_REG_SZ  | RRF_RT_REG_EXPAND_SZ | RRF_SUBKEY_WOW6464KEY, &dwType, outBuffer, &dwSize);
-	
-	outBufferSize = dwSize;
+	long ret = RegGetValue(REGISTRY_BASE, TEXT(REGISTRY_PATH), value, RRF_RT_REG_SZ | RRF_SUBKEY_WOW6464KEY, &dwType, outBuffer, &dwSize);
 	
 	if (ret != ERROR_SUCCESS)
 	{
@@ -98,18 +103,19 @@ bool readIntegerFromRegistry(const wchar_t* key,uint32_t* value)
 	HKEY hKey;
 	DWORD dwType = REG_DWORD;
 	DWORD size = sizeof(DWORD);
+	LSTATUS status;
 
 	if (key == NULL || value == NULL)
 		return false;
 
 	// Check if Module is a valid number
-	if ( RegOpenKeyEx( REGISTRY_BASE,
+	if ( (status = RegOpenKeyEx(REGISTRY_BASE,
 		TEXT(REGISTRY_PATH),
 		0,
 		KEY_READ | KEY_WOW64_64KEY,
-		&hKey) != ERROR_SUCCESS )
+		&hKey)) != ERROR_SUCCESS )
 	{
-		TRACE1( "Unable to open Registry [0x%x]\n", GetLastError());
+		TRACE1( "Unable to open Registry [0x%x]\n", status);
 		return false; 
 	}
 
@@ -126,23 +132,66 @@ bool readIntegerFromRegistry(const wchar_t* key,uint32_t* value)
 	return true;
 }
 
-JHI_RET_I
-JhiQueryAppFileLocationFromRegistry (wchar_t* outBuffer, uint32_t outBufferSize)
+#ifdef NEW_REG_LOCATION
+bool readStringParameterFromRegistry(SERVICE_STATUS_HANDLE srvcHandle, const wchar_t* value, wchar_t* outBuffer, uint32_t outBufferSize)
 {
-	if (!readStringFromRegistry(KEY_JHI_APPLETS_REPOSITORY_PATH,outBuffer,outBufferSize))
+	HKEY hKey;
+	DWORD dwType = REG_SZ | REG_EXPAND_SZ;
+	int maxElementSize = -1;
+	int ret;
+
+	if ((ret = GetServiceRegistryStateKey(srvcHandle, ServiceRegistryStateParameters, KEY_READ, &hKey)) != ERROR_SUCCESS)
+	{
+		TRACE3("Registry read failure for %S, GetServiceRegistryStateKey failed %d handle %p\n", value, ret, (void *)srvcHandle);
+		return false;
+	}
+
+	// Check for the actual value
+	if (RegQueryValueEx(hKey, value, 0, &dwType, (LPBYTE)outBuffer, (LPDWORD)&outBufferSize) != ERROR_SUCCESS)
+	{
+		TRACE1("Registry read failure for %S\n", value);
+		RegCloseKey(hKey);
+		return false;
+	}
+
+	maxElementSize = outBufferSize / sizeof(wchar_t);
+	if (outBuffer[maxElementSize] != '\0') // RegQueryValueEx does not guarantee that the string returned is null terminated
+		outBuffer[maxElementSize] = '\0';
+
+	RegCloseKey(hKey);
+	return true;
+}
+#endif
+
+JHI_RET_I
+JhiQueryAppFileLocationFromRegistry (SERVICE_STATUS_HANDLE srvcHandle, wchar_t* outBuffer, uint32_t outBufferSize)
+{
+	std::unique_ptr<wchar_t> temp{ new wchar_t[outBufferSize] };
+
+#ifdef NEW_REG_LOCATION
+	if (!readStringParameterFromRegistry(srvcHandle, KEY_JHI_APPLETS_REPOSITORY_PATH, temp.get(), outBufferSize))
 		return JHI_ERROR_REGISTRY;
+#else
+	if (!readStringFromRegistry(KEY_JHI_APPLETS_REPOSITORY_PATH, temp.get(), outBufferSize))
+		return JHI_ERROR_REGISTRY;
+#endif
+	ExpandEnvironmentStrings(temp.get(), outBuffer, outBufferSize);
 
 	return JHI_SUCCESS;
 }
 
 JHI_RET_I
-JhiQueryServiceFileLocationFromRegistry (wchar_t* outBuffer, uint32_t outBufferSize)
+JhiQueryServiceFileLocationFromRegistry (SERVICE_STATUS_HANDLE srvcHandle, wchar_t* outBuffer, uint32_t outBufferSize)
 {
 	std::unique_ptr<wchar_t> temp {new wchar_t[outBufferSize]};
 
+#ifdef NEW_REG_LOCATION
+	if (!readStringParameterFromRegistry(srvcHandle, KEY_JHI_FILES_PATH, temp.get(), outBufferSize))
+		return JHI_ERROR_REGISTRY;
+#else
 	if (!readStringFromRegistry(KEY_JHI_FILES_PATH, temp.get(), outBufferSize))
 		return JHI_ERROR_REGISTRY;
-
+#endif
 	ExpandEnvironmentStrings(temp.get(), outBuffer, outBufferSize);
 
 	return JHI_SUCCESS;
@@ -239,15 +288,16 @@ JhiQueryLogTargetFromRegistry(JHI_LOG_TARGET *logTarget)
 bool WriteStringToRegistry(const wchar_t* key,wchar_t* value, uint32_t value_size)
 {
 	HKEY hKey;
+	LSTATUS status;
 
 	// Check if Module is a valid number
-	if ( RegOpenKeyEx( REGISTRY_BASE,
+	if ( (status = RegOpenKeyEx( REGISTRY_BASE,
 		TEXT(REGISTRY_PATH),
 		0,
 		KEY_WRITE  | KEY_WOW64_64KEY,
-		&hKey) != ERROR_SUCCESS )
+		&hKey)) != ERROR_SUCCESS )
 	{
-		TRACE1( "Unable to open Registry [0x%x]\n", GetLastError());
+		TRACE1( "Unable to open Registry [0x%x]\n", status);
 		return false; 
 	}
 
@@ -267,15 +317,16 @@ JHI_RET_I
 JhiWritePortNumberToRegistry(uint32_t portNumber)
 {
 	HKEY hKey;
-
+	LSTATUS status;
+	
 	// Check if Module is a valid number
-	if ( RegOpenKeyEx( REGISTRY_BASE,
+	if ( (status = RegOpenKeyEx(REGISTRY_BASE,
 		TEXT(REGISTRY_PATH),
 		0,
 		KEY_WRITE  | KEY_WOW64_64KEY,
-		&hKey) != ERROR_SUCCESS )
+		&hKey)) != ERROR_SUCCESS )
 	{
-		TRACE1( "Unable to open Registry [0x%x]\n", GetLastError());
+		TRACE1( "Unable to open Registry [0x%x]\n", status);
 		return JHI_ERROR_REGISTRY; 
 	}
 
@@ -298,13 +349,14 @@ JHI_RET_I
 JhiWriteAddressTypeToRegistry(uint32_t addressType)
 {
 	HKEY hKey;
+	LSTATUS status;
 
 	// Check if Module is a valid number
-	if ( RegOpenKeyEx( REGISTRY_BASE,
+	if ( (status = RegOpenKeyEx( REGISTRY_BASE,
 		TEXT(REGISTRY_PATH),
 		0,
 		KEY_WRITE  | KEY_WOW64_64KEY,
-		&hKey) != ERROR_SUCCESS )
+		&hKey)) != ERROR_SUCCESS )
 	{
 		TRACE1( "Unable to open Registry [0x%x]\n", GetLastError());
 		return JHI_ERROR_REGISTRY; 

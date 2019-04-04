@@ -45,6 +45,8 @@
 #include "string_s.h"
 #include "IFirmwareInfo.h"
 #include "FWInfoFactory.h"
+#include "bhplugin1/jhi_plugin_register.h"
+#include "bhplugin2/jhi_plugin_register.h"
 
 #ifdef _WIN32
 #include "Win32Service.h" // for heci driver events
@@ -85,6 +87,9 @@ JHI_RET_I
 
 	//Read app repository location
 	if( JHI_SUCCESS != JhiQueryAppFileLocationFromRegistry(
+#ifdef _WIN32
+		gSvcStatusHandle,
+#endif
 		appletsFileLocation,
 		(FILENAME_MAX-1) * sizeof(FILECHAR)))
 	{
@@ -120,6 +125,9 @@ JHI_RET_I
 
 	//Read jhi service file location
 	if( JHI_SUCCESS != JhiQueryServiceFileLocationFromRegistry(
+#ifdef _WIN32
+		gSvcStatusHandle,
+#endif
 		jhiFileLocation,
 		(FILENAME_MAX-1) * sizeof(FILECHAR)))
 	{
@@ -296,13 +304,18 @@ VERSION discoverFwVersion(VM_Plugin_interface & plugin)
 
 	plugin.JHI_Plugin_QueryTeeMetadata(&c_metadata, &length);
 	
+	if (c_metadata == nullptr)
+		return fwVersion;
+
 	if(length != sizeof(dal_tee_metadata))
 	{
 		LOG2("Unexpected metadata size. Expected: %d. Got: %d", sizeof(dal_tee_metadata), length);
+		JHI_DEALLOC(c_metadata);
 		return fwVersion;
 	}
 
 	memcpy_s(&metadata, sizeof(metadata), c_metadata, length);
+	JHI_DEALLOC(c_metadata);
 
 	fwVersion.Major = metadata.fw_version.major;
 	fwVersion.Minor = metadata.fw_version.minor;
@@ -357,6 +370,27 @@ VERSION discoverFwVersionLegacy()
 		TRACE4("FW Version:\nMajor: %d\nMinor: %d\nHotfix: %d\nBuild: %d", fwVersion.Major, fwVersion.Minor, fwVersion.Hotfix, fwVersion.Build);
 
 	return fwVersion;
+}
+
+bool pluginRegister(JHI_VM_TYPE vmType, VM_Plugin_interface** plugin_table)
+{
+
+	if (plugin_table == NULL)
+		return false;
+
+	switch (vmType)
+	{
+	case JHI_VM_TYPE_BEIHAI_V1:
+		Jhi_Plugin_1::pluginRegister(plugin_table);
+		break;
+	case JHI_VM_TYPE_BEIHAI_V2:
+		Jhi_Plugin_2::pluginRegister(plugin_table);
+		break;
+	default:
+		return false;
+	}
+
+	return true;
 }
 
 //-------------------------------------------------------------------------------
@@ -441,27 +475,13 @@ JHI_RET_I jhis_init()
 #endif // _WIN32
 
 	// Register the plugin (BeihaiV1 vs BeihaiV2)
-	if (!GlobalsManager::Instance().isPluginRegistered())
+	if (!pluginRegister(vmType, &plugin) || plugin == NULL)
 	{
-		ulRetCode = GlobalsManager::Instance().PluginRegister();
-		if (ulRetCode != JHI_SUCCESS)
-		{
-			LOG0("Error: JhiPlugin_Register() failed");
-			goto end;
-		}
-	}
-	else
-	{
-		// do not register the plugin more than once;
-		TRACE0("VM Plugin is already registered, skipping registration");
-	}
-
-	GlobalsManager::Instance().getPluginTable(&plugin);
-	if (plugin == NULL)
-	{
+		LOG0("Error: pluginRegister() failed");
 		ulRetCode = JHI_INTERNAL_ERROR;
 		goto end;
 	}
+	GlobalsManager::Instance().setPluginTable(plugin);
 
 	JHI_PLUGIN_MEMORY_API plugin_memory_api;
 
@@ -544,11 +564,6 @@ end:
 			plugin->JHI_Plugin_DeInit(do_vm_reset);
 		}
 
-		if(GlobalsManager::Instance().isPluginRegistered())
-		{
-			GlobalsManager::Instance().PluginUnregister();
-		}
-
 		// Init failed. Log an error.
 		WriteToEventLog(JHI_EVENT_LOG_ERROR, MSG_INIT_FAILURE);
 		LOG0("JHI init failed");
@@ -610,8 +625,6 @@ void JhiReset()
 		{
 			TRACE1("Error: VM Plugin Deinit failed: 0x%X",ret);
 		}
-
-		GlobalsManager::Instance().PluginUnregister();
 	}
 
 #ifdef _WIN32

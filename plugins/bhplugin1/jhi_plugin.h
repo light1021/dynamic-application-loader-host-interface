@@ -53,7 +53,7 @@
 #include "teetransport.h"
 using namespace intel_dal;
 
-namespace Jhi_Plugin
+namespace Jhi_Plugin_1
 {
 	class BeihaiPlugin : public VM_Plugin_interface, public Singleton<BeihaiPlugin>
     {

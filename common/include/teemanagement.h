@@ -182,7 +182,7 @@ TEE_EXPORT
 // Function: TEE_QueryTEEMetadata
 //		  This interface is used to retrieve version numbers and general info on the DAL VM from the FW.
 // IN		: sdHandle - The SD session handle. Currently not used.
-// OUT		: metadata - A struc that will hold the result
+// OUT		: metadata - A struct that will hold the result
 // RETURN	: TEE_STATUS - success or any failure returns
 //------------------------------------------------------------------------------
 TEE_EXPORT
@@ -195,7 +195,7 @@ TEE_EXPORT
 // Function: TEE_ProvisionOemMasterKey
 //		  This interface is used to provision an OEM Master Key (OMK).
 // IN		: sdHandle - The SD session handle. Currently not used.
-// IN		: key - A pointer to a stuct containing the RSA key exponent.
+// IN		: key - A pointer to a struct containing the RSA key exponent.
 // RETURN	: TEE_STATUS_SUCCESS - Success.
 //			  TEE_STATUS_SD_INTERFACE_DISABLED - DAL OEM signing is not enabled on the platform.
 //			  TEE_STATUS_PLATFORM_AFTER_EOM - The End Of Manufacturing Field Programmable Fuse is already set on the platform.

@@ -66,7 +66,8 @@ namespace intel_dal
 
 #ifdef _WIN32
 
-			copy_status = CopyFile(file.c_str(),(LPCWSTR) DstFile.c_str(), FALSE);
+			// copy only dalp files, not other files that are pointed to by a symlink named .dalp
+			copy_status = CopyFileEx(file.c_str(), DstFile.c_str(), NULL, NULL, FALSE, COPY_FILE_COPY_SYMLINK);
 
 			if (!copy_status) // zero if copy file fails
 			{

@@ -33,8 +33,6 @@ namespace intel_dal
 	GlobalsManager::GlobalsManager()
 	{
 		jhi_state = JHI_STOPPED;
-		plugin_registered = false;
-		transport_registered = false;
 		plugin_table = NULL;
 		transportType = TEE_TRANSPORT_TYPE_INVALID;
 		vmType = JHI_VM_TYPE_INVALID;
@@ -143,7 +141,8 @@ namespace intel_dal
 
 		locker.Lock();
 
-		if (plugin_registered)
+		// The plugin was already registered
+		if (this->plugin_table != NULL)
 			status = true;
 
 		// copy even if not in initialized state, because the EventManager init will call this method before jhi is initialized.
@@ -154,41 +153,14 @@ namespace intel_dal
 		return status;
 	}
 
-	bool GlobalsManager::isPluginRegistered()
-	{
-		return this->plugin_registered;
-	}
-
-	JHI_RET GlobalsManager::PluginRegister()
+	void GlobalsManager::setPluginTable(VM_Plugin_interface* plugin_table)
 	{
 		locker.Lock();
-		JHI_RET ulRetCode = JHI_INTERNAL_ERROR;
-		ulRetCode = JhiPlugin_Register(&this->plugin_table);
-		if (ulRetCode == JHI_SUCCESS)
-		{
-			this->plugin_registered = true;
-		}
-		locker.UnLock();
-		return ulRetCode;
-	}
 
-	void GlobalsManager::PluginUnregister()
-	{
-		locker.Lock();
-		if(this->plugin_registered)
-		{
-			this->plugin_registered = false;
-			JhiPlugin_Unregister(&this->plugin_table);
-		}
+		this->plugin_table = plugin_table;
+
 		locker.UnLock();
 	}
-
-	bool GlobalsManager::isTransportRegistered()
-	{
-		return this->transport_registered;
-	}
-	
-
 
 	void GlobalsManager::setJhiState(jhi_states newState)
 	{
@@ -243,7 +215,7 @@ namespace intel_dal
 
 	bool GlobalsManager::getFwVersionString(char *fw_version)
 	{
-		return sprintf_s(fw_version, FW_VERSION_STRING_MAX_LENGTH, "%d.%d.%d.%d", fwVersion.Major, fwVersion.Minor, fwVersion.Hotfix, fwVersion.Build) == 4;
+		return (sprintf_s(fw_version, FW_VERSION_STRING_MAX_LENGTH, "%d.%d.%d.%d", fwVersion.Major, fwVersion.Minor, fwVersion.Hotfix, fwVersion.Build) != -1);
 	}
 
 	// Platform ID

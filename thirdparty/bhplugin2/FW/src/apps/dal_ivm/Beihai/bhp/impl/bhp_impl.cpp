@@ -446,8 +446,11 @@ static void unblock_threads (int conn_idx, BH_RET code) {
             if (rr->wait_event) {
                 //set killed flag before wakeup, so the session obj would be released.
                 if (rr->is_session) rr->killed = 1;
+                else connections[conn_idx].rrmap.erase(it2);
+                
+                // it is important to not use rr after the following signal call
+                // since it destroys indirectly the struct rr points to and we can get into a race-condition.
                 bh_signal_event(rr->wait_event);
-                if (!rr->is_session) connections[conn_idx].rrmap.erase(it2);
             } else {
                 if (rr->is_session && rr->count == 0) {
                     //rr is not used in any sender thread, but cached in user app.
