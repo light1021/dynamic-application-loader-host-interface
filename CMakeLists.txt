@@ -1,12 +1,14 @@
-#cmake_minimum_required(VERSION 3.4)
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.4)
 project(jhi)
+
+include (GNUInstallDirs)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin_linux)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin_linux)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin_linux)
+set(CMAKE_CONFIG_OUTPUT_DIRECTORY  ${CMAKE_BINARY_DIR}/bin_linux)
 
 ####################
 #   teetransport   #
@@ -27,8 +29,8 @@ set(TEETRANSPORT_SOURCE_FILES
     teetransport/transport/libtee/teetransport_libtee_client_metadata.c
     teetransport/transport/dal_device/teetransport_dal_device.c
     teetransport/transport/dal_device/teetransport_dal_device_wrapper.c
-    thirdparty/libtee/linux/libteelinux.c
-    thirdparty/libtee/linux/libmei/mei.c)
+    thirdparty/LibTEE/src/linux/metee_linux.c
+    thirdparty/LibTEE/src/linux/mei.c)
 
 add_library(teetransport STATIC ${TEETRANSPORT_SOURCE_FILES} ${TEETRANSPORT_HEADER_FILES})
 
@@ -39,8 +41,8 @@ target_include_directories(teetransport PUBLIC
     teetransport/transport/dal_device
     teetransport
     common/include
-    thirdparty/libtee/include/libtee
-    thirdparty/libtee/linux/libmei)
+    thirdparty/LibTEE/include
+    thirdparty/LibTEE/src/linux)
 
 #################
 #   bhplugin1   #
@@ -236,54 +238,66 @@ target_link_libraries(bist jhi teemanagement)
 
 # Set filesystem paths
 
-set(BINDIR       /usr/sbin)
-set(LIBDIR       /usr/lib)
 set(CONFDIR      /etc/jhi)
+set(TMPFILESDIR  /usr/lib/tmpfiles.d)
 
 if(NOT APPLETS_DIR)
-    set(APPLETS_DIR  /var/lib/intel/dal/applets)
+    set(APPLETS_DIR  /usr/lib/dal/applets)
 else()
-    message("APPLETS_DIR set to " ${APPLETS_DIR} ". Make sure to change /etc/jhi/jhi.conf accordingly.")
+    message("APPLETS_DIR set to " ${APPLETS_DIR} ".")
 endif()
 
 if(NOT APP_REPO_DIR)
-    set(APP_REPO_DIR /var/lib/intel/dal/applet_repository)
+    set(APP_REPO_DIR /var/cache/dal/applet_repository)
 else()
-    message("APP_REPO_DIR set to " ${APP_REPO_DIR} ". Make sure to change /etc/jhi/jhi.conf accordingly.")
+    message("APP_REPO_DIR set to " ${APP_REPO_DIR} ".")
 endif()
+
+configure_file(service/linux/jhi.conf.cmake
+	${CMAKE_CONFIG_OUTPUT_DIRECTORY}/jhi.conf)
 
 # Choose init system (define init script install location)
 if(${INIT_SYSTEM} MATCHES SysVinit)
     set(INIT_DIR /etc/init.d)
+
+    install(DIRECTORY DESTINATION ${APP_REPO_DIR})
 else() # systemd, default.
     execute_process(COMMAND pkg-config systemd --variable=systemdsystemunitdir
                     OUTPUT_VARIABLE SYSTEMD_DIR
                     OUTPUT_STRIP_TRAILING_WHITESPACE)
     #Enable when moving to CMake 3.4 instead of the current variable definition
     #pkg_get_variable(SYSTEMD_DIR systemd systemdsystemunitdir)
+
+    install(FILES
+            service/linux/jhi-applet-dir.conf
+            DESTINATION ${TMPFILESDIR}
+            RENAME jhi.conf)
+
+    install(CODE "execute_process(COMMAND chmod +x ./service/linux/mk_applet_repo_dir.sh)")    
+    install(CODE "execute_process(COMMAND ./service/linux/mk_applet_repo_dir.sh)")
+
 endif()
 
 # Perform installation
 
 install(DIRECTORY DESTINATION ${APPLETS_DIR})
-install(DIRECTORY DESTINATION ${APP_REPO_DIR})
 install(DIRECTORY DESTINATION ${CONFDIR})
 
 install(TARGETS
     jhid
-    DESTINATION ${BINDIR})
+    DESTINATION ${CMAKE_INSTALL_SBINDIR})
 
 install(TARGETS
     jhi
     teemanagement
-    DESTINATION ${LIBDIR})
+    DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 install(FILES
     applets/SpoolerApplet.dalp
     DESTINATION ${APPLETS_DIR})
 
 install(FILES
-    service/linux/jhi.conf
+    ${CMAKE_CONFIG_OUTPUT_DIRECTORY}/jhi.conf
     DESTINATION ${CONFDIR})
 
 # Choose init system (choose init script)
@@ -292,7 +306,10 @@ if(${INIT_SYSTEM} MATCHES SysVinit)
         service/linux/jhi
         DESTINATION ${INIT_DIR})
 else() # systemd, default.
+    configure_file(service/linux/jhi.service.cmake
+        ${CMAKE_CONFIG_OUTPUT_DIRECTORY}/jhi.service)
+
     install(FILES
-        service/linux/jhi.service
+        ${CMAKE_CONFIG_OUTPUT_DIRECTORY}/jhi.service
         DESTINATION ${SYSTEMD_DIR})
 endif()

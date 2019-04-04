@@ -145,6 +145,11 @@ TEE_STATUS TEE_QueryTEEMetadata (
 	TEE_STATUS ret = TEE_STATUS_INTERNAL_ERROR;
 	CommandInvoker cInvoker;
 
+	if ((metadata == NULL))
+	{
+		return TEE_STATUS_INVALID_PARAMS;
+	}
+
 	checkServiceStatus();
 	ret = cInvoker.JhisQueryTEEMetadata(metadata, sizeof(dal_tee_metadata));
 

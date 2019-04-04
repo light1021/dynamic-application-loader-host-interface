@@ -82,7 +82,7 @@ const uuid_le MEI_MKHIF = UUID_LE(0x8e6a6715, 0x9abc,0x4043, \
 #endif
 static inline const char *mei_default_device()
 {
-	static const char *devnode[] = {"/dev/mei0", "/dev/mei"};
+	static const char *devnode[] = {"/dev/mei0", "/dev/mei1", "/dev/mei2", "/dev/mei3", "/dev/mei"};
 	unsigned int i;
 
 	for (i = 0; i < ARRAY_SIZE(devnode); i++) {

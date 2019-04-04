@@ -215,7 +215,7 @@ namespace intel_dal
 
 	bool GlobalsManager::getFwVersionString(char *fw_version)
 	{
-		return sprintf_s(fw_version, FW_VERSION_STRING_MAX_LENGTH, "%d.%d.%d.%d", fwVersion.Major, fwVersion.Minor, fwVersion.Hotfix, fwVersion.Build) == 4;
+		return (sprintf_s(fw_version, FW_VERSION_STRING_MAX_LENGTH, "%d.%d.%d.%d", fwVersion.Major, fwVersion.Minor, fwVersion.Hotfix, fwVersion.Build) != -1);
 	}
 
 	// Platform ID

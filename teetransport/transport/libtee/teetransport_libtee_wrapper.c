@@ -48,6 +48,8 @@
 #define TEE_LIB_LAUNCHER_PROTOCOL_GUID   { 0x5565A099, 0x7FE2, 0x45C1, 0xA2, 0x2B, 0xD7, 0xE9, 0xDF, 0xEA, 0x9A, 0x2E }
 #define TEE_LIB_SVM_PROTOCOL_GUID        { 0xF47ACC04, 0xD94B, 0x49CA, 0x87, 0xA6, 0x7F, 0x7D, 0xC0, 0x3F, 0xBA, 0xF3 }
 
+#define ME_TEE_TIMEOUT_INFINITE 0
+
 
 typedef struct _TEE_LIB_LOOKUP_ENTRY
 {
@@ -81,6 +83,24 @@ static const GUID* FindHeciGuid(int port)
 
     return NULL;
 }
+
+#ifndef ARRAY_SIZE
+#define ARRAY_SIZE(a) (sizeof (a) / sizeof ((a)[0]))
+#endif
+static inline const char *mei_default_device()
+{
+#ifndef _WIN32
+	static const char *devnode[] = { "/dev/mei0", "/dev/mei1", "/dev/mei2", "/dev/mei3", "/dev/mei" };
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(devnode); i++) {
+		if (access(devnode[i], F_OK) == 0)
+			return devnode[i];
+	}
+#endif
+	return NULL;
+}
+
 
 static TEE_CLIENT_META_DATA_CONTEXT gClientContext = { NULL, NULL, 0, 0 };
 
@@ -179,7 +199,7 @@ TEE_COMM_STATUS TEELIB_Connect(IN TEE_TRANSPORT_INTERFACE_PTR pInterface, IN TEE
         return TEE_COMM_OUT_OF_MEMORY;
     }
 
-	stat = TeeInit(&(pClient->tee_context), pGuid, NULL);
+	stat = TeeInit(&(pClient->tee_context), pGuid, mei_default_device());
 	if (!TEE_IS_SUCCESS(stat))
 	{
 		free(pClient);
@@ -231,7 +251,6 @@ TEE_COMM_STATUS TEELIB_Disconnect(IN TEE_TRANSPORT_INTERFACE_PTR pInterface, IN 
         }
         else
         {
-            TeeCancel(&(pClient->tee_context));
             TeeDisconnect(&(pClient->tee_context));
             DeleteClient(pClient); // release allocated memory for client metadata
             pClient = NULL;
@@ -282,7 +301,7 @@ TEE_COMM_STATUS TEELIB_Send(IN TEE_TRANSPORT_INTERFACE_PTR pInterface, IN TEE_TR
 
 		bytes_to_write = min((size_t)(length - total_written), client_mtu);
 
-        stat = TeeWrite(& (pClient->tee_context), ptr, bytes_to_write, &bytes_written);
+        stat = TeeWrite(& (pClient->tee_context), ptr, bytes_to_write, &bytes_written, ME_TEE_TIMEOUT_INFINITE);
         if(!TEE_IS_SUCCESS(stat))
         {
             return TEE_COMM_INTERNAL_ERROR;
@@ -321,7 +340,7 @@ TEE_COMM_STATUS TEELIB_Recv(IN TEE_TRANSPORT_INTERFACE_PTR pInterface, IN TEE_TR
         pClient->capacity = 0;
         pClient->curr_pos = 0;
 
-        stat = TeeRead(& (pClient->tee_context), pClient->buffer, pClient->tee_context.maxMsgLen, &pClient->capacity);
+        stat = TeeRead(& (pClient->tee_context), pClient->buffer, pClient->tee_context.maxMsgLen, &pClient->capacity, ME_TEE_TIMEOUT_INFINITE);
         if(!TEE_IS_SUCCESS(stat))
         {
             return TEE_COMM_INTERNAL_ERROR;

@@ -111,7 +111,7 @@
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
-   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Universal_Debug_Static|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Universal_Debug_Static|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -159,7 +159,7 @@
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
-   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Universal_Release_Static|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Universal_Release_Static|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -217,7 +217,7 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Universal_Release|x64'" Label="PropertySheets">
-  <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Universal_Release_Static|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -351,7 +351,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\libtee\include\libtee;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport;$(SolutionDir)..\thirdparty\libtee\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\LibTEE\include;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -375,7 +375,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>NEW_REG_LOCATION;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\libtee\include\libtee;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport;$(SolutionDir)..\thirdparty\libtee\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\LibTEE\include;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -401,7 +401,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\libtee\include\libtee;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport;$(SolutionDir)..\thirdparty\libtee\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\LibTEE\include;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -425,7 +425,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>NEW_REG_LOCATION;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\libtee\include\libtee;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport;$(SolutionDir)..\thirdparty\libtee\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\LibTEE\include;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -451,7 +451,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\libtee\include\libtee;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport;$(SolutionDir)..\thirdparty\libtee\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\LibTEE\include;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -476,7 +476,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\libtee\include\libtee;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport;$(SolutionDir)..\thirdparty\libtee\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\LibTEE\include;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -500,20 +500,20 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <Optimization>Disabled</Optimization>
-	  <PreprocessorDefinitions>NEW_REG_LOCATION;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\libtee\include\libtee;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport;$(SolutionDir)..\thirdparty\libtee\include</AdditionalIncludeDirectories>
-	  <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PreprocessorDefinitions>NEW_REG_LOCATION;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\LibTEE\include;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-	  <AdditionalDependencies>OneCoreUAP.lib;%(AdditionalDependencies)</AdditionalDependencies>
-	  <IgnoreSpecificDefaultLibraries>kernel32.lib</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>OneCoreUAP.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>kernel32.lib</IgnoreSpecificDefaultLibraries>
     </Link>
-     <Lib>
+    <Lib>
       <AdditionalDependencies>OneCoreUAP.lib</AdditionalDependencies>
     </Lib>
-     <Lib>
+    <Lib>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
     </Lib>
@@ -527,20 +527,20 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <Optimization>Disabled</Optimization>
-	  <PreprocessorDefinitions>NEW_REG_LOCATION;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\libtee\include\libtee;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport;$(SolutionDir)..\thirdparty\libtee\include</AdditionalIncludeDirectories>
-	  <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PreprocessorDefinitions>NEW_REG_LOCATION;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\LibTEE\include;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-	  <AdditionalDependencies>OneCoreUAP.lib;%(AdditionalDependencies)</AdditionalDependencies>
-	  <IgnoreSpecificDefaultLibraries>kernel32.lib</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>OneCoreUAP.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>kernel32.lib</IgnoreSpecificDefaultLibraries>
     </Link>
-     <Lib>
+    <Lib>
       <AdditionalDependencies>OneCoreUAP.lib</AdditionalDependencies>
     </Lib>
-     <Lib>
+    <Lib>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
     </Lib>
@@ -557,7 +557,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\libtee\include\libtee;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport;$(SolutionDir)..\thirdparty\libtee\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\LibTEE\include;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -585,7 +585,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NEW_REG_LOCATION;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\libtee\include\libtee;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport;$(SolutionDir)..\thirdparty\libtee\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\LibTEE\include;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -615,7 +615,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\libtee\include\libtee;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport;$(SolutionDir)..\thirdparty\libtee\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\LibTEE\include;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -643,7 +643,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NEW_REG_LOCATION;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\libtee\include\libtee;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport;$(SolutionDir)..\thirdparty\libtee\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\LibTEE\include;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -672,22 +672,22 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-	  <PreprocessorDefinitions>NEW_REG_LOCATION;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\libtee\include\libtee;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport;$(SolutionDir)..\thirdparty\libtee\include</AdditionalIncludeDirectories>
-	  <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PreprocessorDefinitions>NEW_REG_LOCATION;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\LibTEE\include;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-	  <AdditionalDependencies>OneCoreUAP.lib;%(AdditionalDependencies)</AdditionalDependencies>
-	  <IgnoreSpecificDefaultLibraries>kernel32.lib</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>OneCoreUAP.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>kernel32.lib</IgnoreSpecificDefaultLibraries>
     </Link>
-     <Lib>
+    <Lib>
       <AdditionalDependencies>OneCoreUAP.lib</AdditionalDependencies>
     </Lib>
-     <Lib>
+    <Lib>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
     </Lib>
@@ -703,22 +703,22 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-	  <PreprocessorDefinitions>NEW_REG_LOCATION;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\libtee\include\libtee;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport;$(SolutionDir)..\thirdparty\libtee\include</AdditionalIncludeDirectories>
-	  <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PreprocessorDefinitions>NEW_REG_LOCATION;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\LibTEE\include;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-	  <AdditionalDependencies>OneCoreUAP.lib;%(AdditionalDependencies)</AdditionalDependencies>
-	  <IgnoreSpecificDefaultLibraries>kernel32.lib</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>OneCoreUAP.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>kernel32.lib</IgnoreSpecificDefaultLibraries>
     </Link>
-     <Lib>
+    <Lib>
       <AdditionalDependencies>OneCoreUAP.lib</AdditionalDependencies>
     </Lib>
-     <Lib>
+    <Lib>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
     </Lib>
@@ -735,7 +735,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\libtee\include\libtee;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport;$(SolutionDir)..\thirdparty\libtee\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\LibTEE\include;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -764,7 +764,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\libtee\include\libtee;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport;$(SolutionDir)..\thirdparty\libtee\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\LibTEE\include;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -805,8 +805,8 @@
     <ClCompile Include="..\..\teetransport\transport\libtee\teetransport_libtee.c" />
     <ClCompile Include="..\..\teetransport\transport\libtee\teetransport_libtee_client_metadata.c" />
     <ClCompile Include="..\..\teetransport\transport\libtee\teetransport_libtee_wrapper.c" />
-    <ClCompile Include="..\..\thirdparty\libtee\Windows\libteewin.c" />
-    <ClCompile Include="..\..\thirdparty\libtee\Windows\libteewinhelpers.c" />
+    <ClCompile Include="..\..\thirdparty\LibTEE\src\Windows\metee_win.c" />
+    <ClCompile Include="..\..\thirdparty\LibTEE\src\Windows\metee_winhelpers.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TEETransport.rc" />

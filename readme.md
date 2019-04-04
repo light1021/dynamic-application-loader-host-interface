@@ -30,6 +30,11 @@ Release build:
 cmake . -DCMAKE_BUILD_TYPE=Release
 ```
 
+Change installation location:
+```
+cmake . -DCMAKE_INSTALL_PREFIX=/user
+```
+
 Use SysVinit instead of systemd:
 ```
 cmake . -DINIT_SYSTEM=SysVinit

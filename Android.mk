@@ -14,16 +14,16 @@ LOCAL_SRC_FILES := \
     teetransport/transport/libtee/teetransport_libtee.c \
     teetransport/transport/libtee/teetransport_libtee_wrapper.c \
     teetransport/transport/libtee/teetransport_libtee_client_metadata.c \
-    thirdparty/libtee/linux/libteelinux.c \
-    thirdparty/libtee/linux/libmei/mei.c
+    thirdparty/LibTEE/src/linux/metee_linux.c \
+    thirdparty/LibTEE/src/linux/mei.c
 
 LOCAL_C_INCLUDES := \
     $(LOCAL_PATH)/teetransport \
     $(LOCAL_PATH)/teetransport/transport/libtee \
     $(LOCAL_PATH)/teetransport/transport/socket \
     $(LOCAL_PATH)/common/include \
-    $(LOCAL_PATH)/thirdparty/libtee/include/libtee \
-    $(LOCAL_PATH)/thirdparty/libtee/linux/libmei
+    $(LOCAL_PATH)/thirdparty/LibTEE/include \
+    $(LOCAL_PATH)/thirdparty/LibTEE/src/linux
 
 # Needed for libtee's prints
 LOCAL_SHARED_LIBRARIES := liblog

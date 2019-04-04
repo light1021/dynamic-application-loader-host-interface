@@ -1,6 +1,6 @@
 ;=============================================================================
 ;
-; Copyright (c) Intel Corporation (2017).
+; Copyright (c) Intel Corporation (2017-2019).
 ;
 ; INTEL MAKES NO WARRANTY OF ANY KIND REGARDING THE CODE.  THIS CODE IS
 ; LICENSED ON AN "AS IS" BASIS AND INTEL WILL NOT PROVIDE ANY SUPPORT,
@@ -48,9 +48,9 @@ DAL_Files.x86  = 16425
 ;*****************************************
 
 [Manufacturer]
-%ManufacturerName%=Intel, NTamd64
+%ManufacturerName%=Intel, NTamd64.10.0
 
-[Intel.NTamd64]
+[Intel.NTamd64.10.0]
 %DALDescription% = DALInstallSection.ntamd64, SWC\3C4852D6-D47B-4F46-B05E-B5EDC1AA440E
 
 [DALInstallSection.ntamd64]

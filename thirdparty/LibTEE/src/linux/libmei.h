@@ -1,42 +1,14 @@
 /*
-Intel Management Engine Interface (Intel MEI) Linux driver
-Intel MEI Interface Header
-
-This file is provided under BSD license.
-
-BSD LICENSE
-
-Copyright (c) 2003 - 2017 Intel Corporation.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name Intel Corporation nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
+ * SPDX-License-Identifier: BSD-3-Clause
+ *
+ * Copyright(c) 2013 - 2019 Intel Corporation. All rights reserved.
+ *
+ * Intel Management Engine Interface (Intel MEI) Library
+ */
 /*! \file libmei.h
     \brief mei library API
  */
-
- #ifndef __LIBMEI_H__
+#ifndef __LIBMEI_H__
 #define __LIBMEI_H__
 
 #include <linux/uuid.h>
@@ -55,7 +27,7 @@ extern "C" {
 
 /*! Library API version
  */
-#define LIBMEI_API_VERSION MEI_ENCODE_VERSION(1, 0)
+#define LIBMEI_API_VERSION MEI_ENCODE_VERSION(1, 1)
 
 /*! Get current supported library API version
  *
@@ -84,25 +56,13 @@ struct mei {
 	int fd;                 /**< connection file descriptor */
 	int state;              /**< client connection state */
 	int last_err;           /**< saved errno */
+	bool notify_en;         /**< notification is enabled */
 	bool verbose;           /**< verbose execution */
 };
 
-/*! find mei default device
+/*! Default path to mei device
  */
-#ifndef ARRAY_SIZE
-#define ARRAY_SIZE(a) (sizeof (a) / sizeof ((a)[0]))
-#endif
-static inline const char *mei_default_device()
-{
-	static const char *devnode[] = {"/dev/mei0", "/dev/mei"};
-	int i;
-
-	for (i = 0; i < ARRAY_SIZE(devnode); i++) {
-		if (access(devnode[i], F_OK) == 0)
-			return devnode[i];
-	}
-	return NULL;
-}
+#define MEI_DEFAULT_DEVICE "/dev/mei"
 
 /*! Allocate and initialize me handle structure
  *
@@ -155,6 +115,13 @@ void mei_deinit(struct mei *me);
 int mei_connect(struct mei *me);
 
 
+/*! Setup mei connection to non block
+ *
+ *  \param me The mei handle
+ *  \return 0 if successful, otherwise error code
+ */
+int mei_set_nonblock(struct mei *me);
+
 /*! return file descriptor to opened handle
  *
  *  \param me The mei handle
@@ -179,6 +146,23 @@ ssize_t mei_recv_msg(struct mei *me, unsigned char *buffer, size_t len);
  *  \return number of bytes written if successful, otherwise error code
  */
 ssize_t mei_send_msg(struct mei *me, const unsigned char *buffer, size_t len);
+
+/*! Request to Enable or Disable Event Notification
+ *
+ *  \param me The mei handle
+ *  \param enable A boolean to enable or disable event notification
+ *  \return 0 if successful, otherwise error code
+ */
+int mei_notification_request(struct mei *me, bool enable);
+
+/*! Acknowledge an event and enable further notification
+ *  notification events are signaled as priority events (POLLPRI) on select/poll
+ *
+ *  \param me The mei handle
+ *  \return 0 if successful, otherwise error code. -ENOTSUPP is returned
+ *  in case the event notification was not enabled
+ */
+int mei_notification_get(struct mei *me);
 
 #ifdef __cplusplus
 }

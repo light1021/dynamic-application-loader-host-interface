@@ -128,7 +128,7 @@ public:
 	static string getAppletsDir()
 	{
 		ConfigFile &config = ConfigFile::Instance();
-		string path = "/var/lib/intel/dal/applets";
+		string path = "/usr/lib/dal/applets";
 
 		map<string, string>::iterator it = config.settings.find("applets_dir");
 		if (it != config.settings.end())
@@ -142,7 +142,7 @@ public:
 	static string getAppRepoDir()
 	{
 		ConfigFile &config = ConfigFile::Instance();
-		string path = "/var/lib/intel/dal/applet_repository";
+		string path = "/var/cache/dal/applet_repository";
 
 		map<string, string>::iterator it = config.settings.find("app_repo_dir");
 		if (it != config.settings.end())

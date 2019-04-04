@@ -40,7 +40,7 @@
 #include "string_s.h"
 #endif
 
-#include "libtee.h"
+#include "metee.h"
 
 #ifdef __cplusplus
 extern "C" {

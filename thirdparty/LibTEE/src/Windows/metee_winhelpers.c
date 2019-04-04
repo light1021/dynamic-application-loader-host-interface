@@ -1,26 +1,18 @@
-/* Copyright 2014 Intel Corporation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/* SPDX-License-Identifier: Apache-2.0 */
+/*
+ * Copyright (C) 2014-2019 Intel Corporation
  */
 #include <assert.h>
 #include <windows.h>
-#include <SetupAPI.h>
 #include <initguid.h>
 #include <tchar.h>
-#include <libtee\helpers.h>
+#include "helpers.h"
 #include "Public.h"
-#include <libtee\libtee.h>
-#include "Public.h"
+#include "metee.h"
+#include <cfgmgr32.h>
+#include <Objbase.h>
+#include <Devpkey.h>
+#include <Strsafe.h>
 
 
 /*********************************************************************
@@ -68,23 +60,13 @@ TEESTATUS TEEAPI BeginOverlappedInternal(IN TEE_OPERATION operation, IN HANDLE h
 
 
 	if (operation == ReadOperation) {
-		if (ReadFile(handle, buffer, bufferSize, &bytesTransferred, (LPOVERLAPPED)pOverlapped)) {		
+		if (ReadFile(handle, buffer, bufferSize, &bytesTransferred, (LPOVERLAPPED)pOverlapped)) {
 			optSuccesed = TRUE;
-		}
-		else if (ERROR_IO_PENDING == GetLastError())
-		{
-			ERRPRINT(" ReadFile ERROR_IO_PENDING \n");
-			status = TEE_SUCCESS;
 		}
 	}
 	else if (operation == WriteOperation) {
 		if (WriteFile(handle, buffer, bufferSize, &bytesTransferred, (LPOVERLAPPED)pOverlapped)) {
 			optSuccesed = TRUE;
-		}
-		else if (ERROR_IO_PENDING == GetLastError())
-		{
-			ERRPRINT(" WriteFile ERROR_IO_PENDING \n");
-			status = TEE_SUCCESS;
 		}
 	}
 
@@ -376,6 +358,79 @@ Cleanup:
 **		TEE_INVALID_PARAMETER
 **		TEE_INTERNAL_ERROR
 */
+TEESTATUS GetDevicePath(_In_ LPCGUID InterfaceGuid, _Out_writes_(pathSize) PTCHAR path, _In_ SIZE_T pathSize)
+{
+	CONFIGRET      cr						  = CR_SUCCESS;
+	PWSTR		  deviceInterfaceList         = NULL;
+	ULONG         deviceInterfaceListLength   = 0;
+	HRESULT       hr                          = E_FAIL;
+	TEESTATUS     status                      = TEE_INTERNAL_ERROR;
+
+	FUNC_ENTRY();
+
+	if (InterfaceGuid == NULL || path == NULL || pathSize < 1) {
+		status = TEE_INTERNAL_ERROR;
+		ERRPRINT("One of the parameters was illegal");
+		goto Cleanup;
+	}
+
+	path[0] = 0x00;
+
+	cr = CM_Get_Device_Interface_List_Size(
+		&deviceInterfaceListLength,
+		(LPGUID)&GUID_DEVINTERFACE_HECI,
+		NULL,
+		CM_GET_DEVICE_INTERFACE_LIST_PRESENT);
+	if (cr != CR_SUCCESS) {
+		ERRPRINT("Error 0x%x retrieving device interface list size.\n", cr);
+		status = TEE_INTERNAL_ERROR;
+		goto Cleanup;
+	}
+
+	if (deviceInterfaceListLength <= 1) {
+		status = TEE_DEVICE_NOT_FOUND;
+		ERRPRINT("SetupDiGetClassDevs returned status %d", GetLastError());
+		goto Cleanup;
+	}
+
+	deviceInterfaceList = (PWSTR)malloc(deviceInterfaceListLength * sizeof(WCHAR));
+	if (deviceInterfaceList == NULL) {
+		ERRPRINT("Error allocating memory for device interface list.\n");
+		status = TEE_INTERNAL_ERROR;
+		goto Cleanup;
+	}
+	ZeroMemory(deviceInterfaceList, deviceInterfaceListLength * sizeof(WCHAR));
+
+	cr = CM_Get_Device_Interface_List(
+		(LPGUID)&GUID_DEVINTERFACE_HECI,
+		NULL,
+		deviceInterfaceList,
+		deviceInterfaceListLength,
+		CM_GET_DEVICE_INTERFACE_LIST_PRESENT);
+	if (cr != CR_SUCCESS) {
+		ERRPRINT("Error 0x%x retrieving device interface list.\n", cr);
+		status = TEE_INTERNAL_ERROR;
+		goto Cleanup;
+	}
+
+	hr = StringCchCopy(path, pathSize, deviceInterfaceList);
+	if (FAILED(hr)) {
+		status = TEE_INTERNAL_ERROR;
+		ERRPRINT("Error: StringCchCopy failed with HRESULT 0x%x", hr);
+		goto Cleanup;
+	}
+
+	status = TEE_SUCCESS;
+
+Cleanup:
+	if (deviceInterfaceList != NULL) {
+		free(deviceInterfaceList);
+	}
+
+	FUNC_EXIT(status);
+
+	return status;
+}
 
 TEESTATUS SendIOCTL(IN HANDLE handle, IN DWORD ioControlCode, IN LPVOID pInBuffer, IN DWORD inBufferSize, IN LPVOID pOutBuffer, IN DWORD outBufferSize, OUT LPDWORD pBytesRetuned)
 {
@@ -433,13 +488,15 @@ TEESTATUS Win32ErrorToTee(_In_ DWORD win32Error)
 {
 	switch(win32Error) {
 	case ERROR_INVALID_HANDLE:
-	case ERROR_INSUFFICIENT_BUFFER:
 		return TEE_INVALID_PARAMETER;
+	case ERROR_INSUFFICIENT_BUFFER:
+		return TEE_INSUFFICIENT_BUFFER;
 	case ERROR_GEN_FAILURE:
-		return TEE_UNABLE_TO_COMPLETE_OPERTAION;
+		return TEE_UNABLE_TO_COMPLETE_OPERATION;
 	case ERROR_DEVICE_NOT_CONNECTED:
 		return TEE_DEVICE_NOT_READY;
-
+	case ERROR_NOT_FOUND:
+		return TEE_CLIENT_NOT_FOUND;
 	default:
 		return TEE_INTERNAL_ERROR;
 	}

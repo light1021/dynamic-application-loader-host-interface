@@ -1,37 +1,10 @@
 /*
-Intel Management Engine Interface (Intel MEI) Linux driver
-Intel MEI Interface
-
-This file is provided under BSD license.
-
-BSD LICENSE
-
-Copyright (c) 2003 - 2017 Intel Corporation.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name Intel Corporation nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
+ * SPDX-License-Identifier: BSD-3-Clause
+ *
+ * Copyright(c) 2013 - 2019 Intel Corporation. All rights reserved.
+ *
+ * Intel Management Engine Interface (Intel MEI) Library
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -48,7 +21,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*****************************************************************************
  * Intel Management Engine Interface
  *****************************************************************************/
-#ifdef __ANDROID__
+#ifdef ANDROID
 #define LOG_TAG "libmei"
 #include <cutils/log.h>
 #define mei_msg(_me, fmt, ARGS...) ALOGV_IF(_me->verbose, fmt, ##ARGS)
@@ -73,11 +46,12 @@ static inline void __dump_buffer(const char *buf)
 }
 #endif /* ANDROID */
 
-static void mei_dump_hex_buffer(const unsigned char *buf, size_t len)
+static void dump_hex_buffer(const unsigned char *buf, size_t len)
 {
 	const size_t pbufsz = 16 * 3;
 	char pbuf[pbufsz];
 	int j = 0;
+
 	while (len-- > 0) {
 		snprintf(&pbuf[j], pbufsz - j, "%02X ", *buf++);
 		j += 3;
@@ -88,6 +62,15 @@ static void mei_dump_hex_buffer(const unsigned char *buf, size_t len)
 	}
 	if (j)
 		__dump_buffer(pbuf);
+}
+
+static void mei_dump_hex_buffer(struct mei *me,
+				const unsigned char *buf, size_t len)
+{
+	if (!me->verbose)
+		return;
+
+	dump_hex_buffer(buf, len);
 }
 
 void mei_deinit(struct mei *me)
@@ -111,6 +94,7 @@ static inline int __mei_errno_to_state(struct mei *me)
 	case ENOTTY:    return MEI_CL_STATE_NOT_PRESENT;
 	case EBUSY:     return MEI_CL_STATE_DISCONNECTED;
 	case ENODEV:    return MEI_CL_STATE_DISCONNECTED;
+	case EOPNOTSUPP: return me->state;
 	default:        return MEI_CL_STATE_ERROR;
 	}
 }
@@ -120,6 +104,23 @@ int mei_get_fd(struct mei *me)
 	if (!me)
 		return -EINVAL;
 	return me->fd;
+}
+
+static int __mei_set_nonblock(struct mei *me)
+{
+	int flags;
+	int rc;
+	flags = fcntl(me->fd, F_GETFL, 0);
+	if (flags == -1) {
+		me->last_err = errno;
+		return -me->last_err;
+	}
+	rc = fcntl(me->fd, F_SETFL, flags | O_NONBLOCK);
+	if (rc < 0) {
+		me->last_err = errno;
+		return -me->last_err;
+	}
+	return 0;
 }
 
 static inline int __mei_open(struct mei *me, const char *devname)
@@ -134,6 +135,23 @@ static inline int __mei_connect(struct mei *me, struct mei_connect_client_data *
 {
 	errno = 0;
 	int rc = ioctl(me->fd, IOCTL_MEI_CONNECT_CLIENT, d);
+	me->last_err = errno;
+	return rc == -1 ? -me->last_err : 0;
+}
+
+static inline int __mei_notify_set(struct mei *me, uint32_t *enable)
+{
+	errno = 0;
+	int rc = ioctl(me->fd, IOCTL_MEI_NOTIFY_SET, enable);
+	me->last_err = errno;
+	return rc == -1 ? -me->last_err : 0;
+}
+
+static inline int __mei_notify_get(struct mei *me)
+{
+	errno = 0;
+	uint32_t notification;
+	int rc = ioctl(me->fd, IOCTL_MEI_NOTIFY_GET, &notification);
 	me->last_err = errno;
 	return rc == -1 ? -me->last_err : 0;
 }
@@ -170,8 +188,9 @@ int mei_init(struct mei *me, const char *device, const uuid_le *guid,
 
 	me->verbose = verbose;
 
-	mei_msg(me, "API version %hhd.%hhd\n",
-		mei_get_api_version() >> 16, mei_get_api_version() >> 8);
+	mei_msg(me, "API version %u.%u\n",
+		mei_get_api_version() >> 16 & 0xFF,
+		mei_get_api_version() >> 8 & 0xFF);
 
 	rc = __mei_open(me, device);
 	if (rc < 0) {
@@ -215,6 +234,13 @@ void mei_free(struct mei *me)
 		return;
 	mei_deinit(me);
 	free(me);
+}
+
+int mei_set_nonblock(struct mei *me)
+{
+	if (!me)
+		return -EINVAL;
+	return __mei_set_nonblock(me);
 }
 
 int mei_connect(struct mei *me)
@@ -275,8 +301,7 @@ ssize_t mei_recv_msg(struct mei *me, unsigned char *buffer, size_t len)
 		goto out;
 	}
 	mei_msg(me, "read succeeded with result %zd\n", rc);
-	if (me->verbose)
-		mei_dump_hex_buffer(buffer, rc);
+	mei_dump_hex_buffer(me, buffer, rc);
 out:
 	return rc;
 }
@@ -289,8 +314,7 @@ ssize_t mei_send_msg(struct mei *me, const unsigned char *buffer, size_t len)
 		return -EINVAL;
 
 	mei_msg(me, "call write length = %zd\n", len);
-	if (me->verbose)
-		mei_dump_hex_buffer(buffer, len);
+	mei_dump_hex_buffer(me, buffer, len);
 
 	rc  = __mei_write(me, buffer, len);
 	if (rc < 0) {
@@ -303,7 +327,59 @@ ssize_t mei_send_msg(struct mei *me, const unsigned char *buffer, size_t len)
 	return rc;
 }
 
-unsigned int mei_get_api_version()
+int mei_notification_request(struct mei *me, bool enable)
+{
+	uint32_t _enable;
+	int rc;
+
+	if (!me)
+		return -EINVAL;
+
+	if (me->state != MEI_CL_STATE_CONNECTED) {
+		mei_err(me, "client is not connected [%d]\n", me->state);
+		return -EINVAL;
+	}
+
+	_enable = enable;
+	rc = __mei_notify_set(me, &_enable);
+	if (rc < 0) {
+		me->state = __mei_errno_to_state(me);
+		mei_err(me, "Cannot %s notification for client [%d]:%s\n",
+			enable ? "enable" : "disable", rc, strerror(-rc));
+		return rc;
+	}
+
+	me->notify_en = enable;
+
+	return 0;
+}
+
+int mei_notification_get(struct mei *me)
+{
+	int rc;
+
+	if (!me)
+		return -EINVAL;
+
+	if (me->state != MEI_CL_STATE_CONNECTED) {
+		mei_err(me, "client is not connected [%d]\n", me->state);
+		return -EINVAL;
+	}
+	if (!me->notify_en)
+		return -ENOTSUP;
+
+	rc = __mei_notify_get(me);
+	if (rc < 0) {
+		me->state = __mei_errno_to_state(me);
+		mei_err(me, "Cannot get notification for client [%d]:%s\n",
+			rc, strerror(-rc));
+		return rc;
+	}
+
+	return 0;
+}
+
+unsigned int mei_get_api_version(void)
 {
 	return LIBMEI_API_VERSION;
 }

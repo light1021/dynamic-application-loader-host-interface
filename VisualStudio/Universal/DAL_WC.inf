@@ -46,9 +46,9 @@ DAL.Files.13 = 13
 ;*****************************************
 
 [Manufacturer]
-%ManufacturerName%=Intel, NTamd64
+%ManufacturerName%=Intel, NTamd64.10.0
 
-[Intel.NTamd64]
+[Intel.NTamd64.10.0]
 %DALDescription% = DALInstallSection.ntamd64, SWC\DBA4D603-D7ED-4931-8823-17AD585705D5
 
 [DALInstallSection.ntamd64]

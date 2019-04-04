@@ -1726,9 +1726,12 @@ error:
 		{
 			res.retCode = JHI_INTERNAL_ERROR;
 		}
+		else if (GlobalsManager::Instance().getFwVersionString(info.fw_version) == false)
+		{
+			res.retCode = JHI_INTERNAL_ERROR;
+		}
 		else
 		{
-			GlobalsManager::Instance().getFwVersionString(info.fw_version);
 			strcpy_s(info.jhi_version,VERSION_BUFFER_SIZE, VER_PRODUCTVERSION_STR);
 
 			TEE_TRANSPORT_TYPE transport = GlobalsManager::Instance().getTransportType();

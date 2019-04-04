@@ -1,16 +1,6 @@
-/* Copyright 2014 Intel Corporation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/* SPDX-License-Identifier: Apache-2.0 */
+/*
+ * Copyright (C) 2014-2019 Intel Corporation
  */
 #ifndef __HELPERS_H
 #define __HELPERS_H
@@ -19,7 +9,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <stdarg.h>
-#include "libteewin.h"
+#include "metee_win.h"
 
 	#if _DEBUG
 		#define PRINTS_ENABLE
@@ -48,7 +38,7 @@
 	#ifdef ANDROID
 		// For debugging
 		//#define LOG_NDEBUG 0
-		#define LOG_TAG "libtee"
+		#define LOG_TAG "metee"
 		#include <cutils/log.h>
 		#define DebugPrint(fmt, ...) ALOGV_IF(true, fmt, ##__VA_ARGS__)
 		#define ErrorPrint(fmt, ...) ALOGE_IF(true, fmt, ##__VA_ARGS__)
@@ -56,12 +46,18 @@
 			#define PRINTS_ENABLE
 		#endif
 	#else /* LINUX */
-		#include <stdlib.h>
 		#ifdef DEBUG
 			#define PRINTS_ENABLE
 		#endif
-		#define DebugPrint(fmt, ...) fprintf(stderr, fmt, ##__VA_ARGS__)
-		#define ErrorPrint(fmt, ...) DebugPrint(fmt, ##__VA_ARGS__)
+		#ifdef SYSLOG
+			#include <syslog.h>
+			#define DebugPrint(fmt, ...) syslog(LOG_DEBUG, fmt, ##__VA_ARGS__)
+			#define ErrorPrint(fmt, ...) syslog(LOG_ERR, fmt, ##__VA_ARGS__)
+		#else
+			#include <stdlib.h>
+			#define DebugPrint(fmt, ...) fprintf(stderr, fmt, ##__VA_ARGS__)
+			#define ErrorPrint(fmt, ...) fprintf(stderr, fmt, ##__VA_ARGS__)
+		#endif /* SYSLOG */
 	#endif /* ANDROID */
 
 	#define MALLOC(X)   malloc(X)
@@ -74,21 +70,21 @@
 
 #ifdef PRINTS_ENABLE
 #define DBGPRINT(_x_, ...) \
-	DebugPrint("TEELIB: (%s:%s():%d) ",__FILE__,__FUNCTION__,__LINE__); \
-	DebugPrint(_x_, ##__VA_ARGS__)
+	DebugPrint("TEELIB: (%s:%s():%d) " _x_,__FILE__,__FUNCTION__,__LINE__, ##__VA_ARGS__);
 #else
 	#define DBGPRINT(_x_, ...)
 #endif /* PRINTS_ENABLE */
 
 #ifdef PRINTS_ENABLE
 #define ERRPRINT(_x_, ...) \
-	ErrorPrint("TEELIB: (%s:%s():%d) ",__FILE__,__FUNCTION__,__LINE__); \
-	ErrorPrint(_x_, ##__VA_ARGS__)
+	ErrorPrint("TEELIB: (%s:%s():%d) " _x_,__FILE__,__FUNCTION__,__LINE__, ##__VA_ARGS__);
 #else
 	#define ERRPRINT(_x_, ...)
 #endif
 
 #define FUNC_ENTRY()         ERRPRINT("Entry\n")
 #define FUNC_EXIT(status)    ERRPRINT("Exit with status: %d\n", status)
+
+static inline void __tee_init_handle(PTEEHANDLE handle) { memset(handle, 0, sizeof(TEEHANDLE));}
 
 #endif /* __HELPERS_H */

@@ -304,13 +304,18 @@ VERSION discoverFwVersion(VM_Plugin_interface & plugin)
 
 	plugin.JHI_Plugin_QueryTeeMetadata(&c_metadata, &length);
 	
+	if (c_metadata == nullptr)
+		return fwVersion;
+
 	if(length != sizeof(dal_tee_metadata))
 	{
 		LOG2("Unexpected metadata size. Expected: %d. Got: %d", sizeof(dal_tee_metadata), length);
+		JHI_DEALLOC(c_metadata);
 		return fwVersion;
 	}
 
 	memcpy_s(&metadata, sizeof(metadata), c_metadata, length);
+	JHI_DEALLOC(c_metadata);
 
 	fwVersion.Major = metadata.fw_version.major;
 	fwVersion.Minor = metadata.fw_version.minor;

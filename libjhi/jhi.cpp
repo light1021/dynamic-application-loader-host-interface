@@ -542,8 +542,8 @@ JHI_CreateSession_handler(
 		initBuffer = &tmpBuffer;
 	}
 
-	if ( !(AppId && (strlen(AppId) == LEN_APP_ID) &&
-		(JhiUtilUUID_Validate(AppId, ucAppId) == JHI_SUCCESS)) )
+	if ((strnlen_s(AppId, LEN_APP_ID) != LEN_APP_ID) ||
+		(JhiUtilUUID_Validate(AppId, ucAppId) != JHI_SUCCESS))
 	{
 		TRACE0 ("Either Appname is bad or illegal length ..\n");
 		return JHI_INVALID_APPLET_GUID;
@@ -669,8 +669,8 @@ JHI_CreateSessionProcess_handler(
 		initBuffer = &tmpBuffer;
 	}
 
-	if ( !(AppId && (strlen(AppId) == LEN_APP_ID) &&
-		(JhiUtilUUID_Validate(AppId, ucAppId) == JHI_SUCCESS)) )
+	if ((strnlen_s(AppId, LEN_APP_ID) != LEN_APP_ID) ||
+		(JhiUtilUUID_Validate(AppId, ucAppId) != JHI_SUCCESS))
 	{
 		TRACE0 ("Either Appname is bad or illegal length ..\n");
 		return JHI_INVALID_APPLET_GUID;
@@ -897,8 +897,8 @@ JHI_Install2(
 	if(!ValidateJHIhandle(handle))
 		return JHI_INVALID_HANDLE;
 
-	if ( !(AppId && (strlen(AppId) == LEN_APP_ID) &&
-		(JhiUtilUUID_Validate(AppId, ucAppId) == JHI_SUCCESS)) )
+	if ((strnlen_s(AppId, LEN_APP_ID) != LEN_APP_ID) ||
+		(JhiUtilUUID_Validate(AppId, ucAppId) != JHI_SUCCESS))
 	{
 		TRACE0 ("Either Appname is bad or illegal length ..\n");
 		return JHI_INVALID_APPLET_GUID;
@@ -950,8 +950,8 @@ JHI_RET   JHI_Uninstall(
 	if(!ValidateJHIhandle(handle))
 		return JHI_INVALID_HANDLE;
 
-	if ( !(AppId && (strlen(AppId) == LEN_APP_ID) &&
-		(JhiUtilUUID_Validate(AppId, ucAppId) == JHI_SUCCESS)) )
+	if ((strnlen_s(AppId, LEN_APP_ID) != LEN_APP_ID) ||
+		(JhiUtilUUID_Validate(AppId, ucAppId) != JHI_SUCCESS))
 	{
 		TRACE0 ("Either Appname is bad or illegal length ..\n");
 		return JHI_INVALID_APPLET_GUID;
@@ -1005,8 +1005,8 @@ JHI_GetAppletProperty(
 	if(!ValidateJHIhandle(handle))
 		return JHI_INVALID_HANDLE;
 
-	if ( !(pAppId && (strlen(pAppId) == LEN_APP_ID) &&
-		(JhiUtilUUID_Validate(pAppId, ucAppId) == JHI_SUCCESS)) )
+	if ((strnlen_s(pAppId, LEN_APP_ID) != LEN_APP_ID) ||
+		(JhiUtilUUID_Validate(pAppId, ucAppId) != JHI_SUCCESS))
 	{
 		TRACE0 ("Either Appname is bad or illegal length ..\n");
 		return JHI_INVALID_APPLET_GUID;
@@ -1106,8 +1106,8 @@ JHI_GetSessionsCount(
 	if (SessionsCount == NULL)
 		return JHI_INVALID_PARAMS;
 
-	if ( !(AppId && (strlen(AppId) == LEN_APP_ID) &&
-		(JhiUtilUUID_Validate(AppId, ucAppId) == JHI_SUCCESS)) )
+	if ((strnlen_s(AppId, LEN_APP_ID) != LEN_APP_ID) ||
+		(JhiUtilUUID_Validate(AppId, ucAppId) != JHI_SUCCESS))
 	{
 		TRACE0 ("Either Appname is bad or illegal length ..\n");
 		return JHI_INVALID_APPLET_GUID;

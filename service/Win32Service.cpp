@@ -788,6 +788,11 @@ bool RegisterHeciDeviceEvents()
 		filter.dbch_handle = heciDevice;
 	
 		heciNotifyHandle = RegisterDeviceNotification(gSvcStatusHandle, &filter, DEVICE_NOTIFY_SERVICE_HANDLE);
+		if (heciNotifyHandle == NULL)
+		{
+			TRACE0("failed to register heci device notification\n");
+			return false;
+		}
 	}
 
 	return true;

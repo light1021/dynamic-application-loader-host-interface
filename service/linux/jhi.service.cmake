@@ -3,7 +3,7 @@ Description=Intel Dynamic Application Loader Host Interface (JHI)
 
 [Service]
 Type=notify
-ExecStart=/usr/sbin/jhid
+ExecStart=${CMAKE_INSTALL_PREFIX}/sbin/jhid
 Restart=on-abort
 
 [Install]

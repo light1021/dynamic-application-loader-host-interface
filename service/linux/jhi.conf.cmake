@@ -62,6 +62,6 @@ socket_path /tmp/jhi_socket
 #   applets_dir can be read only.
 #   app_repo_dir needs to be writeable by the daemon.
 #
-#applets_dir /var/lib/intel/dal/applets
-#app_repo_dir /var/lib/intel/dal/applet_repository
+applets_dir ${APPLETS_DIR}
+app_repo_dir ${APP_REPO_DIR}
 #

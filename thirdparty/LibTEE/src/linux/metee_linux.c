@@ -1,16 +1,6 @@
-/* Copyright 2014 Intel Corporation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/* SPDX-License-Identifier: Apache-2.0 */
+/*
+ * Copyright (C) 2014-2019 Intel Corporation
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,8 +12,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <linux/mei.h>
-#include <helpers.h>
-#include <libtee.h>
+#include "metee.h"
+#include "helpers.h"
 #include <libmei.h>
 
 /* use inline function instead of macro to avoid -Waddress warning in GCC */
@@ -33,6 +23,29 @@ static inline struct mei *to_mei(PTEEHANDLE _h)
 	return _h ? (struct mei *)_h->handle : NULL;
 }
 
+static inline int __mei_select(struct mei *me, bool on_read, unsigned long timeout)
+{
+	int rv;
+	fd_set rset, wset;
+	struct timeval tv;
+
+	tv.tv_sec =  timeout / 1000;
+	tv.tv_usec = (timeout % 1000) * 1000000;
+
+	FD_ZERO(&rset);
+	FD_ZERO(&wset);
+	if (on_read)
+		FD_SET(me->fd, &rset);
+	else
+		FD_SET(me->fd, &wset);
+	errno = 0;
+	rv = select(me->fd + 1 , &rset, &wset, NULL, &tv);
+	if (rv < 0)
+		return -errno;
+	if (rv == 0)
+		return -ETIME;
+	return 0;
+}
 
 
 static inline TEESTATUS errno2status(int err)
@@ -42,6 +55,7 @@ static inline TEESTATUS errno2status(int err)
 		case -ENOTTY: return TEE_CLIENT_NOT_FOUND;
 		case -EBUSY : return TEE_BUSY;
 		case -ENODEV: return TEE_DISCONNECTED;
+		case -ETIME : return TEE_TIMEOUT;
 		default     : return TEE_INTERNAL_ERROR;
 	}
 }
@@ -50,6 +64,11 @@ TEESTATUS TEEAPI TeeInit(IN OUT PTEEHANDLE handle, IN const UUID *uuid, IN OPTIO
 {
 	struct mei *me;
 	TEESTATUS  status;
+#if defined(DEBUG) && !defined(SYSLOG)
+	bool verbose = true;
+#else
+	bool verbose = false;
+#endif // DEBUG and !SYSLOG
 
 	FUNC_ENTRY();
 
@@ -59,8 +78,8 @@ TEESTATUS TEEAPI TeeInit(IN OUT PTEEHANDLE handle, IN const UUID *uuid, IN OPTIO
 		goto End;
 	}
 
-	TEE_INIT_HANDLE(*handle);
-	me = mei_alloc(device ? device : mei_default_device(), uuid, 0, false);
+	__tee_init_handle(handle);
+	me = mei_alloc(device ? device : MEI_DEFAULT_DEVICE, uuid, 0, verbose);
 	if (!me) {
 		ERRPRINT("Cannot init mei structure\n");
 		status = TEE_INTERNAL_ERROR;
@@ -107,7 +126,7 @@ End:
 }
 
 TEESTATUS TEEAPI TeeRead(IN PTEEHANDLE handle, IN OUT void *buffer, IN size_t bufferSize,
-			 OUT OPTIONAL size_t *pNumOfBytesRead)
+			 OUT OPTIONAL size_t *pNumOfBytesRead, IN OPTIONAL uint32_t timeout)
 {
 	struct mei *me = to_mei(handle);
 	TEESTATUS status;
@@ -115,13 +134,20 @@ TEESTATUS TEEAPI TeeRead(IN PTEEHANDLE handle, IN OUT void *buffer, IN size_t bu
 
 	FUNC_ENTRY();
 
-	if (!me || !buffer) {
+	if (!me || !buffer || !bufferSize) {
 		ERRPRINT("One of the parameters was illegal");
 		status = TEE_INVALID_PARAMETER;
 		goto End;
 	}
 
 	DBGPRINT("call read length = %zd\n", bufferSize);
+
+	if (timeout && (rc = __mei_select(me, true, timeout))) {
+		status = errno2status(rc);
+		ERRPRINT("select failed with status %zd %s\n",
+				rc, strerror(rc));
+		goto End;
+	}
 
 	rc = mei_recv_msg(me, buffer, bufferSize);
 	if (rc < 0) {
@@ -142,7 +168,7 @@ End:
 }
 
 TEESTATUS TEEAPI TeeWrite(IN PTEEHANDLE handle, IN const void *buffer, IN size_t bufferSize,
-			  OUT OPTIONAL size_t *numberOfBytesWritten)
+			  OUT OPTIONAL size_t *numberOfBytesWritten, IN OPTIONAL uint32_t timeout)
 {
 	struct mei *me  =  to_mei(handle);
 	TEESTATUS status;
@@ -150,13 +176,20 @@ TEESTATUS TEEAPI TeeWrite(IN PTEEHANDLE handle, IN const void *buffer, IN size_t
 
 	FUNC_ENTRY();
 
-	if (!me || !buffer) {
+	if (!me || !buffer || !bufferSize) {
 		ERRPRINT("One of the parameters was illegal");
 		status = TEE_INVALID_PARAMETER;
 		goto End;
 	}
 
 	DBGPRINT("call write length = %zd\n", bufferSize);
+
+	if (timeout && (rc = __mei_select(me, false, timeout))) {
+		status = errno2status(rc);
+		ERRPRINT("select failed with status %zd %s\n",
+				rc, strerror(rc));
+		goto End;
+	}
 
 	rc  = mei_send_msg(me, buffer, bufferSize);
 	if (rc < 0) {
@@ -179,18 +212,44 @@ void TEEAPI TeeDisconnect(PTEEHANDLE handle)
 	struct mei *me  =  to_mei(handle);
 	FUNC_ENTRY();
 	if (me) {
-		mei_deinit(me);
+		mei_free(me);
 		handle->handle = NULL;
 	}
 
 	FUNC_EXIT(TEE_SUCCESS);
 }
 
-
-TEESTATUS TEEAPI TeeCancel(IN PTEEHANDLE handle)
+TEE_DEVICE_HANDLE TEEAPI TeeGetDeviceHandle(IN PTEEHANDLE handle)
 {
+	struct mei *me = to_mei(handle);
+
 	FUNC_ENTRY();
-	FUNC_EXIT(TEE_NOTSUPPORTED);
-	return TEE_NOTSUPPORTED;
+
+	if (!me) {
+		ERRPRINT("One of the parameters was illegal");
+		FUNC_EXIT(TEE_INVALID_PARAMETER)
+		return TEE_INVALID_DEVICE_HANDLE;
+	}
+	
+	FUNC_EXIT(TEE_SUCCESS);
+	return me->fd;
 }
 
+TEESTATUS TEEAPI GetDriverVersion(IN PTEEHANDLE handle, IN OUT teeDriverVersion_t *driverVersion)
+{
+	struct mei *me = to_mei(handle);
+	TEESTATUS status;
+
+	FUNC_ENTRY();
+
+	if (!me || !driverVersion) {
+		ERRPRINT("One of the parameters was illegal");
+		status = TEE_INVALID_PARAMETER;
+		goto End;
+	}
+	
+	status = TEE_NOTSUPPORTED;
+End:
+	FUNC_EXIT(status);
+	return status;
+}
