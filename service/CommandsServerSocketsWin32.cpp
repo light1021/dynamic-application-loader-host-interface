@@ -301,6 +301,7 @@ namespace intel_dal
 		char * inputBuffer = NULL;
 		char * outputBuffer = NULL;
 		uint32_t outputBufferSize = 0;
+		HRESULT winRes = E_UNEXPECTED;
 
 
 		CS_ClientThreadParams* params = (CS_ClientThreadParams*) threadParam;
@@ -311,11 +312,13 @@ namespace intel_dal
 		JHI_DEALLOC_T(params);
 		params = NULL;
 
-		// COM init
-		CoInitializeEx(NULL, COINIT_MULTITHREADED);
-
 		do
 		{
+			// COM init
+			winRes = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+			// Error when initializing the COM library
+			if (winRes != S_OK && winRes != S_FALSE)
+				break;
 
 			iResult = blockedRecv(clientSocket, (char*) &inputBufferSize, sizeof(uint32_t));
 			if (iResult !=  sizeof(uint32_t))
@@ -398,7 +401,8 @@ namespace intel_dal
 		clientSocket = INVALID_SOCKET;
 
 		// COM deinit
-		CoUninitialize();
+		if (winRes == S_OK || winRes == S_FALSE)
+			CoUninitialize();
 
 		//release Max Clients semaphore
 		semaphore->Release();

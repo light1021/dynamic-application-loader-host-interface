@@ -2,7 +2,6 @@
 //
 #include "resource.h"
 #include "jhi_version.h"
-#include "jhi.h"
 
 #ifdef X64_DLL
 	#define ORIGINAL_FILENAME "jhi64.dll"
@@ -84,7 +83,7 @@ BEGIN
             VALUE "LegalCopyright", "Copyright © 2010-" CURRENT_YEAR_STRING ", Intel Corporation. All rights reserved."
 			VALUE "OriginalFilename", ORIGINAL_FILENAME
             VALUE "ProductName", "Intel(R) Dynamic Application Loader Host Interface"
-            VALUE "ProductVersion", JHI_VERSION
+            VALUE "ProductVersion", VER_PRODUCTVERSION_STR
         END
     END
     BLOCK "VarFileInfo"

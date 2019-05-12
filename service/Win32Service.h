@@ -45,7 +45,9 @@
 #include <strsafe.h>
 #include "JHIMain.h"
 #include "FWInfoWin32.h"
-
+#ifndef WINDOWS_7_SUPPORT
+#include <Cfgmgr32.h>
+#endif
 
 #pragma comment(lib, "advapi32.lib")
 
@@ -79,8 +81,11 @@ extern SERVICE_STATUS_HANDLE   gSvcStatusHandle;
 extern HANDLE                  ghSvcStopEvent;
 
 extern HANDLE				   heciDevice;
+#ifdef WINDOWS_7_SUPPORT
 extern HDEVNOTIFY			   heciNotifyHandle;
-
+#else
+extern HCMNOTIFICATION		   heciNotifyHandle;
+#endif
 
 // service API
 int SvcInstall(void);
@@ -94,6 +99,10 @@ bool UnRegisterHeciDeviceEvents();
  
 // windows service events callback function
 DWORD WINAPI SvcCtrlHandler(DWORD dwOpcode,DWORD evtype, PVOID evdata, PVOID Context);
+
+#ifndef WINDOWS_7_SUPPORT
+DWORD HeciDeviceEventsCallback(HCMNOTIFICATION hNotify, PVOID hContext, CM_NOTIFY_ACTION Action, PCM_NOTIFY_EVENT_DATA EventData, DWORD EventDataSize);
+#endif
 
 // main function for JHI service
 void WINAPI SvcMain( DWORD, LPTSTR * ); 

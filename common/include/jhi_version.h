@@ -23,50 +23,40 @@
    limitations under the License.
 */
 
-/**                                                                            
-********************************************************************************
-**
-**    @file jhi_version.h
-**
-**    @brief Contains definitions of the MAJOR, MINOR, & HOTFIX versions used
-**           throughout the code.
-**
-**    @author Christopher Spiegel and John Traver
-**
-********************************************************************************
-*/   
-
-/* Sentry Header
- *****************/
 #ifndef _JHI_VERSION_H_
 #define _JHI_VERSION_H_
-
-/* Include Files
- *****************/
-#include "version.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#define _MAKE_VER_STRING(v1, v2, v3, v4)    #v1 "." #v2 "." #v3 "." #v4
+#define MAKE_VER_STRING(v1, v2, v3, v4)    _MAKE_VER_STRING(v1, v2, v3, v4)
+
+// Version format: Major.Minor.Year.MonthDay
+#define JHI_VER_MAJOR    1
+#define JHI_VER_MINOR    33
+#define JHI_VER_YEAR     2019
+#define JHI_VER_MONTHDAY 0512
+
+
+#define JHI_VERSION MAKE_VER_STRING(JHI_VER_MAJOR, JHI_VER_MINOR, JHI_VER_YEAR, JHI_VER_MONTHDAY)
+
+#define VER_PRODUCTVERSION          JHI_VER_MAJOR,JHI_VER_MINOR,JHI_VER_YEAR,JHI_VER_MONTHDAY
+#define VER_PRODUCTVERSION_STR      MAKE_VER_STRING(JHI_VER_MAJOR, JHI_VER_MINOR, JHI_VER_YEAR, JHI_VER_MONTHDAY)
+
+/**  Adding the current year date string for use in updating the year component of the 
+***  displayed copyright message.
+***  the string needs to be the full 4 char value without spaces or special characters.
+***  For example:
+***        "2012"
+*/
+#define CURRENT_YEAR_STRING   "2019"
+
 /* Global Declarations
  **************************/
 
 #define VER_SEPARATOR_STR "."   /**< Separator String used between major, minor, hotfix and build strings */
-
-/* Flags set based on build type */
-#if DBG
-/** Define "DBG" string that is attached to version string when DBG build */
-#define VER_DEBUG_TAG   " (DBG)"
-#else
-/** Define string that is attached to version string when release build */
-#define VER_DEBUG_TAG   
-#endif
-
-
-/** Combined file version information  */
-#define VERSION_STR VER_MAJOR_STR VER_SEPARATOR_STR VER_MINOR_STR VER_SEPARATOR_STR VER_HOTFIX_STR VER_SEPARATOR_STR VER_BUILD_STR VER_DEBUG_TAG
-
 /** @brief Defines a generic version structure used in the software build process. This structure will be used to
 *   represent versions of ROM, FW and Recovery modules.
 */
