@@ -1383,6 +1383,7 @@ error:
 				{
 					res.dataLength = sizeof(JHI_RESPONSE);
 					res.retCode = TEE_STATUS_INTERNAL_ERROR;
+					break;
 				}
 				res_data.sdHandle = (uint64_t) sdHandle;
 

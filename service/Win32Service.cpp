@@ -37,7 +37,11 @@ SERVICE_STATUS_HANDLE   gSvcStatusHandle;
 HANDLE                  ghSvcStopEvent = NULL;
 
 HANDLE				   heciDevice = NULL;
+#ifdef WINDOWS_7_SUPPORT
 HDEVNOTIFY			   heciNotifyHandle = NULL;
+#else
+HCMNOTIFICATION heciNotifyHandle = NULL;
+#endif
 
 //
 // Purpose: 
@@ -780,6 +784,7 @@ bool RegisterHeciDeviceEvents()
 
 		heciNotifyHandle = NULL;
     
+#ifdef WINDOWS_7_SUPPORT
 		DEV_BROADCAST_HANDLE filter;
 		memset(&filter, 0, sizeof(filter));
 
@@ -789,6 +794,17 @@ bool RegisterHeciDeviceEvents()
 	
 		heciNotifyHandle = RegisterDeviceNotification(gSvcStatusHandle, &filter, DEVICE_NOTIFY_SERVICE_HANDLE);
 		if (heciNotifyHandle == NULL)
+#else
+		CM_NOTIFY_FILTER filter;
+		memset(&filter, 0, sizeof(filter));
+
+		filter.cbSize = sizeof(filter);
+		filter.FilterType = CM_NOTIFY_FILTER_TYPE_DEVICEHANDLE;
+		filter.u.DeviceHandle.hTarget = heciDevice;
+
+		CONFIGRET cr = CM_Register_Notification(&filter, NULL, (PCM_NOTIFY_CALLBACK)HeciDeviceEventsCallback, &heciNotifyHandle);
+		if (cr != CR_SUCCESS)
+#endif // #ifdef WINDOWS_7_SUPPORT
 		{
 			TRACE0("failed to register heci device notification\n");
 			return false;
@@ -808,13 +824,44 @@ bool UnRegisterHeciDeviceEvents()
 			return false;
 		}
 		heciDevice = NULL;
-
+#ifdef WINDOWS_7_SUPPORT
 		if (UnregisterDeviceNotification(heciNotifyHandle) == FALSE)
+#else
+		CONFIGRET cr = CM_Unregister_Notification(heciNotifyHandle);
+		if (cr != CR_SUCCESS)
+#endif
 			return false;
 	}
 
 	return true;
 }
+
+#ifndef WINDOWS_7_SUPPORT
+//Handles HECI device notification.
+//
+//Arguments:
+//	hNotify       - The notification that fired the callback
+//	hContext      - The callback context
+//	Action        - The type of notification
+//	EventData     - Additional information about the callback
+//	EventDataSize - The size of EventData
+//Return Value: 
+//	A Win32 error code. 
+//	If responding to a CM_NOTIFY_ACTION_DEVICEQUERYREMOVE notification, the PCM_NOTIFY_CALLBACK callback return either ERROR_SUCCESS or ERROR_CANCELLED, as appropriate. 
+//	Otherwise, the callback return ERROR_SUCCESS.
+DWORD HeciDeviceEventsCallback(HCMNOTIFICATION hNotify, PVOID hContext, CM_NOTIFY_ACTION Action, PCM_NOTIFY_EVENT_DATA EventData, DWORD EventDataSize)
+{
+	switch (Action)
+	{
+		case CM_NOTIFY_ACTION_DEVICEQUERYREMOVE: TRACE0("Removing HECI device..."); jhi_invoke_reset(); break;
+		case CM_NOTIFY_ACTION_DEVICEQUERYREMOVEFAILED: TRACE0("HECI device removal failed"); break;
+		case CM_NOTIFY_ACTION_DEVICEREMOVECOMPLETE: TRACE0("HECI device removed"); break;
+		default: break;
+	}
+	
+	return ERROR_SUCCESS;
+}
+#endif //#ifndef WINDOWS_7_SUPPORT
 
 // Code taken from https://msdn.microsoft.com/en-us/library/windows/desktop/bb540475(v=vs.85).aspx
 //

@@ -150,7 +150,7 @@ TEE_EXPORT
 
 //------------------------------------------------------------------------------
 // Function: TEE_ListInstalledTAs
-//		  This interface send an admin command package to a specific SD session.
+//		  This interface lists the installed TAs.
 // IN		: sdHandle - The SD session handle.
 // OUT		: uuidList - The structure containing the UUIDs as a string representations without the '-' delimeters..
 //				The user should pass a reference to an existing struct and the library will fill it.
@@ -165,7 +165,7 @@ TEE_EXPORT
 
 //------------------------------------------------------------------------------
 // Function: TEE_ListInstalledSDs
-//		  This interface send an admin command package to a specific SD session.
+//		  This interface lists the installed SDs.
 // IN		: sdHandle - The SD session handle.
 // OUT		: uuidList - The structure containing the UUIDs as a string representations without the '-' delimeters..
 //				The user should pass a reference to an existing struct and the library will fill it.

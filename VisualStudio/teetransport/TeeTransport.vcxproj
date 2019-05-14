@@ -350,7 +350,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WINDOWS_7_SUPPORT;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\LibTEE\include;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -450,7 +450,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WINDOWS_7_SUPPORT;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\LibTEE\include;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -556,7 +556,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WINDOWS_7_SUPPORT;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\LibTEE\include;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -734,7 +734,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WINDOWS_7_SUPPORT;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\LibTEE\include;$(SolutionDir)..\common\include;$(SolutionDir)..\teetransport\transport\socket;$(SolutionDir)..\teetransport\transport\socket\lib;$(SolutionDir)..\teetransport\transport\libtee;$(SolutionDir)..\teetransport\transport\libtee\lib;$(SolutionDir)..\teetransport</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>

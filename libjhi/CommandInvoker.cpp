@@ -1386,8 +1386,8 @@ namespace intel_dal
 		}
 
 		uuidList->uuidCount = resData->count;
-		uuidList->uuids = (UUID_STR*) JHI_ALLOC(res->dataLength);
-		memcpy_s(uuidList->uuids, res->dataLength, resData->data, res->dataLength);
+		uuidList->uuids = (UUID_STR*) JHI_ALLOC(dataBufferLen);
+		memcpy_s(uuidList->uuids, dataBufferLen, resData->data, dataBufferLen);
 
 		// verify the uuids
 		if (!validateUuidList(uuidList))
@@ -1507,8 +1507,8 @@ cleanup:
 		}
 
 		uuidList->uuidCount = resData->count;
-		uuidList->uuids = (UUID_STR*)JHI_ALLOC(res->dataLength);
-		memcpy_s(uuidList->uuids, res->dataLength, resData->data, res->dataLength);
+		uuidList->uuids = (UUID_STR*)JHI_ALLOC(dataBufferLen);
+		memcpy_s(uuidList->uuids, dataBufferLen, resData->data, dataBufferLen);
 
 		// verify the uuids
 		if (!validateUuidList(uuidList))

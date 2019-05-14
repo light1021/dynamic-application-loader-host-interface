@@ -57,7 +57,7 @@ public:
 	static TEE_TRANSPORT_TYPE getTransportType()
 	{
 		ConfigFile &config = ConfigFile::Instance();
-		string s_transport = "MEI";
+		string s_transport = "AUTO";
 		TEE_TRANSPORT_TYPE t_transport = TEE_TRANSPORT_TYPE_TEE_LIB;
 
 		map<string, string>::iterator it = config.settings.find("transport");
