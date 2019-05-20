@@ -45,6 +45,7 @@
 #include "JHIMain.h"
 #include "dbg.h"
 #include "jhi.h"
+#include "jhi_version.h"
 
 // -----------------------------------------------------------------------
 // JHI service command line error codes
